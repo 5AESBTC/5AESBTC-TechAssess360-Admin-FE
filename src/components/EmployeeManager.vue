@@ -3,7 +3,7 @@
     <h2 style="text-align: center">Quản lý nhân viên</h2>
   </div>
   <div>
-    <nav class="navbar navbar-light bg-light mt-3">
+    <nav class="navbar navbar-light bg-light mt-3" >
       <div class="container-fluid">
         <form class="d-flex ms-auto">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
