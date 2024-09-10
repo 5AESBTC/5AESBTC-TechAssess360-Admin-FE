@@ -1,21 +1,21 @@
 <template>
-  <div>
+  <div style="border-bottom: solid gray;">
     <h2 style="text-align: center">Quản lý nhân viên</h2>
-
-    <nav class="navbar navbar-light bg-light">
+  </div>
+  <div>
+    <nav class="navbar navbar-light bg-light mt-3">
       <div class="container-fluid">
-        <div class="d-flex">
-          <button class="btn btn-outline-success me-2" type="button">Thêm mới</button>
-          <button class="btn btn-sm btn-outline-secondary" type="button">Khởi tạo tiêu chí và câu hỏi</button>
-        </div>
         <form class="d-flex ms-auto">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-primary" type="submit">Search</button>
+          <button class="btn btn-outline-primary me-1" type="submit">Search</button>
         </form>
+        <div>
+          <button class="btn btn-outline-success" type="button" @click="showModal = true">Thêm mới</button>
+        </div>
       </div>
     </nav>
 
-    <div class="table-responsive-md">
+    <div class="table-responsive-md mt-2">
       <table class="table table-striped table-hover table-bordered m-0 center" border="1" style="text-align: center">
         <thead class="table-success">
         <tr>
@@ -56,13 +56,22 @@
         </li>
       </ul>
     </nav>
+
+    <!-- Modal Component -->
+    <ModalEmployee v-if="showModal" @close="showModal = false" @add-employee="addEmployee" />
   </div>
 </template>
 
 <script>
+import ModalEmployee from './ModalEmployee.vue';
+
 export default {
+  components: {
+    ModalEmployee
+  },
   data() {
     return {
+      showModal: false,
       DataTest: [
         {id: 1, name: 'Trịnh Thái Quân', position: 'Manager'},
         {id: 2, name: 'Quang', position: 'Manager'},
@@ -71,11 +80,8 @@ export default {
         {id: 5, name: 'Tùng', position: 'Manager'},
       ],
       currentPage: 1,
-      itemsPerPage: 3,
+      itemsPerPage: 4,
     };
-  },
-  mounted() {
-    this.DataTest;
   },
   computed: {
     totalPages() {
@@ -100,8 +106,12 @@ export default {
       if (this.currentPage < this.totalPages) {
         this.currentPage++;
       }
+    },
+    addEmployee(employee) {
+      const newId = this.DataTest.length + 1;
+      this.DataTest.push({ id: newId, ...employee });
+      this.showModal = false;
     }
   }
 };
 </script>
-
