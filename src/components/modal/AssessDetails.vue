@@ -14,9 +14,12 @@
             <!-- Thanh hiển thị dữ liệu -->
             <div class="data-display-bar">
               <div class="data-item" v-for="(item, index) in dataItems" :key="index">
-                <input type="checkbox" v-model="item.checked" />
-                <span>{{ item.label }}</span>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" id="inlineCheckbox1" v-model="item.checked">
+                  <label class="form-check-label" for="inlineCheckbox1">{{ item.label }}</label>
+                </div>
               </div>
+
               <div class="year-dropdown">
                 <label for="year">Năm</label>
                 <select id="year" v-model="selectedYear">
@@ -61,7 +64,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import {ref} from 'vue';
 
 export default {
   setup() {
@@ -69,41 +72,46 @@ export default {
     const selectedYear = ref('2021');
     const years = ['2021', '2022', '2023', '2024'];
     const dataItems = ref([
-      { label: 'Đợt 1', checked: false },
-      { label: 'Đợt 2', checked: false },
-      { label: 'Đợt 3', checked: false },
-      { label: 'Đợt 4', checked: false },
-      { label: 'Đợt 5', checked: false }
+      {label: 'Đợt 1', checked: false},
+      {label: 'Đợt 2', checked: false},
+      {label: 'Đợt 3', checked: false},
+      {label: 'Đợt 4', checked: false},
+      {label: 'Đợt 5', checked: false}
     ]);
 
     const DataTest = ref([
       {
         Evaluation: 'Bạn đã hoàn tất các mục tiêu công việc trong thời gian qua 1?',
         ratings: [
-          { value: 1, images: [require('@/assets/img1.png'), require('@/assets/img1.png'), require('@/assets/img1.png')] },
-          { value: 3, images: [require('@/assets/img1.png'), require('@/assets/img1.png')] },
-          { value: 5, images: [require('@/assets/img1.png'), require('@/assets/img1.png')] }
+          {value: 1, images: [require('@/assets/img1.png'), require('@/assets/img1.png'),require('@/assets/img1.png'),require('@/assets/img1.png')]},
+          {value: 3, images: [require('@/assets/img1.png'), require('@/assets/img1.png')]},
+          {value: 4, images: [require('@/assets/img1.png'), require('@/assets/img1.png')]},
+          {value: 5, images: [require('@/assets/img1.png'), require('@/assets/img1.png')]}
+
         ],
-        currentValues: [1, 3, 5]
+        currentValues: [1, 4, 3, 5]
       },
       {
         Evaluation: 'Bạn đã hoàn tất các mục tiêu công việc trong thời gian qua 2?',
         ratings: [
-          { value: 1, images: [require('@/assets/img1.png'), require('@/assets/img1.png')] },
-          { value: 2, images: [require('@/assets/img1.png'), require('@/assets/img1.png')] },
-          { value: 3, images: [require('@/assets/img1.png'), require('@/assets/img1.png')] },
-          { value: 4, images: [require('@/assets/img1.png'), require('@/assets/img1.png')] },
-          { value: 5, images: [require('@/assets/img1.png'), require('@/assets/img1.png')] }
+          {value: 1, images: [require('@/assets/img1.png'), require('@/assets/img1.png')]},
+          {value: 2, images: [require('@/assets/img1.png'), require('@/assets/img1.png')]},
+          {value: 3, images: [require('@/assets/img1.png'), require('@/assets/img1.png')]},
+          {value: 4, images: [require('@/assets/img1.png'), require('@/assets/img1.png')]},
+          {value: 5, images: [require('@/assets/img1.png'), require('@/assets/img1.png'),require('@/assets/img1.png'),require('@/assets/img1.png')]}
         ],
         currentValues: [1, 2, 3, 4, 5]
       },
       {
         Evaluation: 'Bạn đã hoàn tất các mục tiêu công việc trong thời gian qua 3?',
         ratings: [
-          { value: 4, images: [require('@/assets/img1.png'), require('@/assets/img1.png')] },
-          { value: 5, images: [require('@/assets/img1.png'), require('@/assets/img1.png')] }
+          {value: 1, images: [require('@/assets/img1.png'), require('@/assets/img1.png')]},
+          {value: 2, images: [require('@/assets/img1.png'), require('@/assets/img1.png')]},
+          {value: 3, images: [require('@/assets/img1.png'), require('@/assets/img1.png')]},
+          {value: 4, images: [require('@/assets/img1.png'), require('@/assets/img1.png')]},
+          {value: 5, images: [require('@/assets/img1.png'), require('@/assets/img1.png')]}
         ],
-        currentValues: [4, 5]
+        currentValues: [1, 2, 3, 4, 5]
       },
       {
         Evaluation: 'Bạn đã hoàn tất các mục tiêu công việc trong thời gian qua 4?',
@@ -142,24 +150,31 @@ export default {
   max-width: 150vh;
 }
 
-/* Styling the data display bar */
+
 .data-display-bar {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   margin-bottom: 20px;
-  padding: 0 10px;
+  gap: 15px;
 }
 
-/* Styling each data item */
 .data-item {
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 8px;
   margin-right: 20px;
 }
 
-/* Styling the year dropdown */
+.data-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
+
+.data-item span {
+  font-size: 16px;
+}
+
 .year-dropdown {
   display: flex;
   align-items: center;
@@ -170,48 +185,43 @@ export default {
   margin-right: 5px;
 }
 
-/* Styling for the radio group and image */
 .radio-group-with-image {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 40px;
 }
 
-/* Styling each radio button with image */
 .radio-with-image {
   display: flex;
   align-items: center;
-  gap: 0px; /* Add spacing between radio button and label */
+  gap: 4px;
 }
 
-/* Circular radio buttons */
 .form-check-input {
   width: 20px;
   height: 20px;
-  border-radius: 50%; /* Make the radio button circular */
+  border-radius: 50%;
   border: 2px solid gray;
-  margin-right: 3px; /* Space between the radio button and its label */
+  margin-right: 3px;
 }
 
-/* Styling the employee images container with overlap */
 .employee-images {
   display: flex;
-  gap: 0; /* No gap to overlap the images */
-  margin-left: 10px; /* Add space between the currentValues and the images */
+  gap: 0;
+  margin-left: 10px;
   position: relative;
 }
 
 .employee-image {
   position: relative;
-  margin-left: -10px; /* Negative margin to create overlap */
+  margin-left: -10px;
 }
 
-/* Styling each employee image */
 .employee-image img {
-  width: 40px; /* Set the size of the image */
+  width: 40px;
   height: 40px;
-  border-radius: 50%; /* Circular image */
-  border: 2px solid gray; /* Add gray border around */
+  border-radius: 50%;
+  border: 2px solid gray;
   position: relative;
 }
 
