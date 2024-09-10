@@ -14,8 +14,8 @@
             <!-- Thanh hiển thị dữ liệu -->
             <div class="data-display-bar">
               <div class="data-item" v-for="(item, index) in dataItems" :key="index">
-                <span>{{ item.label }}</span>
                 <input type="checkbox" v-model="item.checked" />
+                <span>{{ item.label }}</span>
               </div>
               <div class="year-dropdown">
                 <label for="year">Năm</label>
@@ -133,7 +133,6 @@ export default {
   }
 };
 </script>
-
 <style scoped>
 .modal-dialog-scrollable {
   max-height: 90vh;
@@ -143,49 +142,20 @@ export default {
   max-width: 150vh;
 }
 
-/* Add spacing between radio buttons */
-.form-check-inline {
-  margin-right: 100px;
-}
-
-/* Styling for the radio group and image */
-.radio-group-with-image {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-/* Styling for each radio button with image */
-.radio-with-image {
-  display: flex;
-  align-items: center;
-}
-
-/* Styling the employee images */
-.employee-images {
-  display: flex;
-  gap: 5px; /* Giảm khoảng cách giữa các hình ảnh */
-}
-
-/* Styling each employee image */
-.employee-image img {
-  width: 50px; /* Small size */
-  height: 50px;
-  border-radius: 50%; /* Circular image */
-  margin-left: -10px; /* Đè lên nhau một chút */
-}
-
 /* Styling the data display bar */
 .data-display-bar {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   margin-bottom: 20px;
+  padding: 0 10px;
 }
 
 /* Styling each data item */
 .data-item {
   display: flex;
   align-items: center;
+  gap: 3px;
   margin-right: 20px;
 }
 
@@ -193,9 +163,60 @@ export default {
 .year-dropdown {
   display: flex;
   align-items: center;
+  gap: 0px;
 }
 
 .year-dropdown label {
-  margin-right: 10px;
+  margin-right: 5px;
+}
+
+/* Styling for the radio group and image */
+.radio-group-with-image {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Styling each radio button with image */
+.radio-with-image {
+  display: flex;
+  align-items: center;
+  gap: 0px; /* Add spacing between radio button and label */
+}
+
+/* Circular radio buttons */
+.form-check-input {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%; /* Make the radio button circular */
+  border: 2px solid gray;
+  margin-right: 3px; /* Space between the radio button and its label */
+}
+
+/* Styling the employee images container with overlap */
+.employee-images {
+  display: flex;
+  gap: 0; /* No gap to overlap the images */
+  margin-left: 10px; /* Add space between the currentValues and the images */
+  position: relative;
+}
+
+.employee-image {
+  position: relative;
+  margin-left: -10px; /* Negative margin to create overlap */
+}
+
+/* Styling each employee image */
+.employee-image img {
+  width: 40px; /* Set the size of the image */
+  height: 40px;
+  border-radius: 50%; /* Circular image */
+  border: 2px solid gray; /* Add gray border around */
+  position: relative;
+}
+
+/* Spacing between current values and images */
+.radio-group-with-image .form-check-label {
+  margin-right: 0px;
 }
 </style>
