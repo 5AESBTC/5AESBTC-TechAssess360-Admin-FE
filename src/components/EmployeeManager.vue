@@ -66,6 +66,7 @@
 import ModalEmployee from './ModalEmployee.vue';
 
 export default {
+  name: 'EmployeeManager',
   components: {
     ModalEmployee
   },

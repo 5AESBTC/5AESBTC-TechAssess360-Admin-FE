@@ -137,6 +137,7 @@
   </template>
   <script>
   export default {
+    name: 'ManageProjects',
     data() {
       return {
         searchQuery: "",
