@@ -1,8 +1,10 @@
+import EmployeeManager from '@/components/EmployeeManager.vue';
+import ManageProjects from '@/components/ManageProjects.vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import AdminTech from "@/components/EmployeeManager.vue";
 
 const routes = [
-    { path: '/AdminTech', component: AdminTech }
+    { path: '/', component: EmployeeManager },
+    { path: '/manage-projects', component: ManageProjects }
 ];
 
 const router = createRouter({
