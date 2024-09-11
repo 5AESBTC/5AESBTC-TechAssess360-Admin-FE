@@ -1,11 +1,14 @@
 <template>
+  <div style="border-bottom: solid gray;">
+    <h2 style="text-align: center">Danh sách quản lý các dự án</h2>
+  </div>
   <div class="container">
     <div class="top-bar">
       <!-- Search Bar -->
       <input 
         type="text" 
         v-model="searchQuery" 
-        placeholder="Tìm kiếm dự án..." 
+        placeholder="Tìm kiếm tên dự án hoặc bộ phận..." 
         class="search-bar"
       />
     </div>
@@ -135,11 +138,11 @@
         <button @click="closeAddEmployeeModal" class="close-btn">
           <i class="fas fa-times"></i>
         </button>
-        <h2 class="modal-title">Thêm nhân viên</h2>
+        <h2 class="modal-title">Thêm nhân viên vào dự án ...</h2>
         <input 
           type="text" 
           v-model="tableSearchQuery" 
-          placeholder="Tìm kiếm.." 
+          placeholder="Tìm kiếm tên nhân viên hoặc bộ phận hoặc chức vụ" 
           class="search-bar1"
         />
         <div class="table-container">
@@ -155,7 +158,7 @@
             <tbody>
               <tr v-for="(item, index) in paginatedEmployees" :key="index">
                 <td style="text-align: center;">
-                  <input type="checkbox" :checked="selectedEmployees.includes(index)" @click="toggleEmployee(index)">
+                  <input class="form-check-input" type="checkbox" :checked="selectedEmployees.includes(index)" @click="toggleEmployee(index)">
                 </td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.department }}</td>
@@ -164,6 +167,9 @@
             </tbody>
           </table>
         </div>
+        <div class="buttons">
+      <button @click="add" class="add1-btn">Thêm</button>
+    </div>
         <!-- Pagination for employee table -->
         <div class="pagination1">
           <button 
@@ -210,13 +216,13 @@ export default {
        projects: [
         {
           id: 1, 
-          name: "ABC", 
-          department: "Kinh Doanh",
+          name: "TechSale", 
+          department: "Phát triển",
           details: [
-            { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
-            { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" }
+            { nameNV: "Trịnh Thái Quân", department: "Phát triển", position: "Middle", avatar: "path/to/avatar1.jpg" },
+            { nameNV: "Nguyễn Văn A", department: "Phát triển", position: "Fresher", avatar: "path/to/avatar2.jpg" },
+            { nameNV: "Trịnh Thái Quân", department: "Phát triển", position: "Manager", avatar: "path/to/avatar1.jpg" },
+            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar2.jpg" }
           ]
         },
         {
@@ -224,14 +230,14 @@ export default {
           name: "TechSign", 
           department: "Phát Triển",
           details: [
-            { nameNV: "Lê Thị B", department: "Phát Triển", position: "Developer", avatar: "path/to/avatar3.jpg" },
+            { nameNV: "Lê Thị B", department: "Phát Triển", position: "Middle", avatar: "path/to/avatar3.jpg" },
             { nameNV: "Trần Văn C", department: "Phát Triển", position: "Tester", avatar: "path/to/avatar4.jpg" },
             { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
+            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Fresher", avatar: "path/to/avatar2.jpg" },
             { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
+            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Middle", avatar: "path/to/avatar2.jpg" },
             { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
+            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Junior", avatar: "path/to/avatar2.jpg" },
             { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
             { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
           ]
@@ -249,8 +255,8 @@ export default {
         },
         {
           id: 4, 
-          name: "AdC", 
-          department: "Kinh Doanh",
+          name: "TechPort", 
+          department: "Tổng vụ",
           details:[
           ]
         },
@@ -895,8 +901,8 @@ paginatedEmployees() {
     width: 100%;
   }
   .search-bar1 {
-       padding: 10px;
-      width: 300px;
+      padding: 10px;
+      width: 400px;
       border-radius: 25px;
       border: 1px solid #ddd;
       outline: none;

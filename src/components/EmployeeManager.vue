@@ -1,6 +1,6 @@
 <template>
   <div style="border-bottom: solid gray;">
-    <h2 style="text-align: center">Quản lý nhân viên</h2>
+    <h2 style="text-align: center">Danh sách quản lý các bộ phận</h2>
   </div>
   <div>
     <nav class="navbar navbar-light bg-light mt-3" >
@@ -22,7 +22,8 @@
           <th scope="col">Stt</th>
           <th scope="col">Tên</th>
           <th scope="col">Chức vụ</th>
-          <th scope="col">Sửa</th>
+          <th scope="col">Bộ phận</th>
+          <th scope="col">Chi tiết</th>
           <th scope="col">Xoá</th>
         </tr>
         </thead>
@@ -31,8 +32,13 @@
           <td>{{ t.id }}</td>
           <td>{{ t.name }}</td>
           <td>{{ t.position }}</td>
+          <td>{{ t.department }}</td>
           <td>
-            <a type='button' class="btn btn-warning">Chi tiết</a>
+            <button class="btn btn-warning me-3">Chi tiết</button>
+            <router-link to="/assess-page">
+              <button class="btn btn-primary">Đánh giá</button>
+            </router-link>
+            
           </td>
           <td>
             <button type="button" class="btn btn-danger">Xoá</button>
@@ -74,11 +80,11 @@ export default {
     return {
       showModal: false,
       DataTest: [
-        {id: 1, name: 'Trịnh Thái Quân', position: 'Manager'},
-        {id: 2, name: 'Quang', position: 'Manager'},
-        {id: 3, name: 'Hải', position: 'Manager'},
-        {id: 4, name: 'Đại', position: 'Manager'},
-        {id: 5, name: 'Tùng', position: 'Manager'},
+        {id: 1, name: 'Trịnh Thái Quân', position: 'Manager', department: 'Phát triển'},
+        {id: 2, name: 'Hà Cảnh Minh Quang', position: 'Manager', department: 'Global'},
+        {id: 3, name: 'Nguyễn Xuân Hải', position: 'Manager', department: 'Tổng vụ'},
+        {id: 4, name: 'Hồ Xuân Đại', position: 'Manager', department: 'Phát triển'},
+        {id: 5, name: 'Đình Tùng', position: 'Manager', department: 'Phát triển'},
       ],
       currentPage: 1,
       itemsPerPage: 4,
