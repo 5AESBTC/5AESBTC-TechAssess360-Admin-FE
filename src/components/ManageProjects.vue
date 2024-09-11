@@ -1,302 +1,456 @@
 <template>
-    <div class="container">
-      <div class="top-bar">
-        <!-- Search Bar -->
-        <input 
-          type="text" 
-          v-model="searchQuery" 
-          placeholder="Tìm kiếm dự án..." 
-          class="search-bar"
-        />
-      </div>
-  
-      <!-- Table -->
-      <table class="project-table">
-        <thead>
-          <tr>
-            <th>
-              <button class="add-btn">
-                Thêm dự án
-               </button>
-            </th>
-            <th @click="sort('name')">Dự án</th>
-            <th>Số lượng thành viên</th>
-            <th @click="sort('department')">Bộ phận</th>
-            <th>Tác vụ</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(project, index) in paginatedProjects" :key="project.id">
-            <td>{{ (currentPage - 1) * pageSize + index + 1 }}</td>
-            <td @click="viewProjectDetails(project)" class="project-name">{{ project.name }}</td>
-            <td>{{ project.details.length }}</td>
-            <td>{{ project.department }}</td>
-           
-   <td>
-    <div class="menu-container">
-      <button class="menu-btn" @click="toggleMenu('project', project)">
-        <i class="fa-solid fa-ellipsis-vertical"></i>
-      </button>
-      <div v-if="activeMenu === 'project' && activeProject === project" class="menu-dropdown show">
-        <button class="menu-item">
-          <i class="fas fa-edit"></i> 
-        </button>
-        <button class="menu-item">
-          <i class="fas fa-trash"></i> 
-        </button>
-      </div>
+  <div class="container">
+    <div class="top-bar">
+      <!-- Search Bar -->
+      <input 
+        type="text" 
+        v-model="searchQuery" 
+        placeholder="Tìm kiếm dự án..." 
+        class="search-bar"
+      />
     </div>
-  </td>
-  
-          </tr>
-        </tbody>
-      </table>
-  
-      <!-- Pagination -->
-      <div class="pagination">
-        <button 
-          @click="prevPage" 
-          :disabled="currentPage === 1" 
-          class="pagination-btn"
-        >
-          <i class="fas fa-arrow-left"></i> Trước
+
+    <!-- Table -->
+    <table class="project-table">
+      <thead>
+        <tr>
+          <th>
+            <button class="add-btn">
+              Thêm dự án
+            </button>
+          </th>
+          <th @click="sort('name')">Dự án</th>
+          <th>Số lượng thành viên</th>
+          <th @click="sort('department')">Bộ phận</th>
+          <th>Tác vụ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(project, index) in paginatedProjects" :key="project.id">
+          <td>{{ (currentPage - 1) * pageSize + index + 1 }}</td>
+          <td @click="viewProjectDetails(project)" class="project-name">{{ project.name }}</td>
+          <td>{{ project.details.length }}</td>
+          <td>{{ project.department }}</td>
+          <td>
+            <div class="menu-container">
+              <button class="menu-btn" @click="toggleMenu('project', project)">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+              </button>
+              <div v-if="activeMenu === 'project' && activeProject === project" class="menu-dropdown show">
+                <button class="menu-item">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="menu-item">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button 
+        @click="prevPage" 
+        :disabled="currentPage === 1" 
+        class="pagination-btn"
+      >
+        <i class="fas fa-arrow-left"></i> 
+      </button>
+      <span>Trang {{ currentPage }} / {{ totalPages }}</span>
+      <button 
+        @click="nextPage" 
+        :disabled="currentPage === totalPages" 
+        class="pagination-btn"
+      >
+         <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+
+    <!-- Project Details Modal -->
+    <div v-if="selectedProject" class="modal-overlay" @click.self="closeProjectDetails">
+      <div class="modal-container">
+        <button @click="closeProjectDetails" class="close-btn">
+          <i class="fas fa-times"></i>
         </button>
-        <span>Trang {{ currentPage }} / {{ totalPages }}</span>
-        <button 
-          @click="nextPage" 
-          :disabled="currentPage === totalPages" 
-          class="pagination-btn"
-        >
-          Sau <i class="fas fa-arrow-right"></i>
-        </button>
-      </div>
-  
-      <!-- Project Details Modal -->
-      <div v-if="selectedProject" class="modal-overlay" @click.self="closeProjectDetails">
-        <div class="modal-container">
-          <button @click="closeProjectDetails" class="close-btn">
-            <i class="fas fa-times"></i>
-          </button>
-          <h2 class="project-details-title">Chi tiết dự án {{ selectedProject.name }}</h2>
-          <div class="detail-header">
-            <input
-              type="text"
-              v-model="detailSearchQuery"
-              placeholder="Tìm kiếm chi tiết..."
-              class="search-bar detail-search-bar"
-            />
-          </div>
-  
-          <!-- Detail Table -->
-          <div class="detail-table-container">
-            <table class="detail-table">
-              <thead>
-                <tr>
-                  <th>
-                    <button class="add-btn2">
-                      Thêm thành viên
-                    </button>
-                  </th>
-                  <th>Avatar</th>
-                  <th @click="sortDetail('nameNV')">Tên NV</th>
-                  <th @click="sortDetail('department')">Bộ phận</th>
-                  <th @click="sortDetail('position')">Chức vụ</th>
-                  <th>Tác vụ</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(detail, index) in filteredDetails" :key="index">
-                  <td>{{ index + 1 }}</td>
-                  <td><img :src="detail.avatar" alt="Avatar" class="avatar-img" /></td>
-                  <td>{{ detail.nameNV }}</td>
-                  <td>{{ detail.department }}</td>
-                  <td>{{ detail.position }}</td>
-                  <td>
+        <h2 class="project-details-title">Chi tiết dự án {{ selectedProject.name }}</h2>
+        <div class="detail-header">
+          <input
+            type="text"
+            v-model="detailSearchQuery"
+            placeholder="Tìm kiếm chi tiết..."
+            class="search-bar detail-search-bar"
+          />
+         
+        </div>
+        <!-- Detail Table -->
+        <div class="detail-table-container">
+          <table class="detail-table">
+            <thead>
+              <tr>
+                <th> <button @click="showAddEmployeeModal" class="btn btn-success">
+                    Thêm thành viên
+                  </button></th>
+                <th>Avatar</th>
+                <th @click="sortDetail('nameNV')">Tên NV</th>
+                <th @click="sortDetail('department')">Bộ phận</th>
+                <th @click="sortDetail('position')">Chức vụ</th>
+                <th>Tác vụ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(detail, index) in filteredDetails" :key="index">
+                <td>{{ index + 1 }}</td>
+                <td><img :src="detail.avatar" alt="Avatar" class="avatar-img" /></td>
+                <td>{{ detail.nameNV }}</td>
+                <td>{{ detail.department }}</td>
+                <td>{{ detail.position }}</td>
+                <td>
                   <div class="menu-container">
                     <button class="menu-btn" @click="toggleMenu('detail', detail)">
                       <i class="fa-solid fa-ellipsis-vertical"></i>
                     </button>
                     <div v-if="activeMenu === 'detail' && activeDetail === detail" class="menu-dropdown show">
                       <button class="menu-item">
-                        <i class="fas fa-info-circle"></i> 
+                        <i class="fas fa-info-circle"></i>
                       </button>
                       <button class="menu-item" >
-                        <i class="fas fa-trash"></i> 
+                        <i class="fas fa-trash" @click="removeDetail(detail)"></i>
                       </button>
                     </div>
-                    </div>
-                  </td>
-  
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
-  </template>
-  <script>
-  export default {
-    name: 'ManageProjects',
-    data() {
-      return {
-        searchQuery: "",
-        detailSearchQuery: "",
-        currentPage: 1,
-        pageSize: 5,
-        sortField: "name",
-        sortDirection: 1,
-        sortDetailField: "nameNV",
-        sortDetailDirection: 1,
-        activeMenu: null,
-        activeProject: null,
-        activeDetail: null,
-        projects: [
-          {
-            id: 1, 
-            name: "ABC", 
-            department: "Kinh Doanh",
-            details: [
-              { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-              { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
-              { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-              { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" }
-            ]
-          },
-          {
-            id: 2, 
-            name: "TechSign", 
-            department: "Phát Triển",
-            details: [
-              { nameNV: "Lê Thị B", department: "Phát Triển", position: "Developer", avatar: "path/to/avatar3.jpg" },
-              { nameNV: "Trần Văn C", department: "Phát Triển", position: "Tester", avatar: "path/to/avatar4.jpg" },
-              { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-              { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
-              { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-              { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
-              { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-              { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
-              { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-              { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
-            ]
-          },
-         {
-            id: 3, 
-            name: "TechAssess", 
-            department: "Kinh Doanh",
-            details: [
-              { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-              { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
-              { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-              { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" }
-            ]
-          },
-        ],
-        selectedProject: null,
-        selectedProjectDetails: []
-      };
+
+  <!-- Add Employee Modal -->
+    <div v-if="showAddEmployee" class="modal-overlay" @click.self="closeAddEmployeeModal">
+      <div class="modal-container">
+        <button @click="closeAddEmployeeModal" class="close-btn">
+          <i class="fas fa-times"></i>
+        </button>
+        <h2 class="modal-title">Thêm nhân viên</h2>
+        <input 
+          type="text" 
+          v-model="tableSearchQuery" 
+          placeholder="Tìm kiếm.." 
+          class="search-bar1"
+        />
+        <div class="table-container">
+          <table class="employee-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th style="width: 350px;">Tên</th>
+                <th>Bộ phận</th>
+                <th>Chức vụ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in paginatedEmployees" :key="index">
+                <td style="text-align: center;">
+                  <input type="checkbox" :checked="selectedEmployees.includes(index)" @click="toggleEmployee(index)">
+                </td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.department }}</td>
+                <td>{{ item.role }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Pagination for employee table -->
+        <div class="pagination1">
+          <button 
+            @click="prevPage1" 
+            :disabled="currentPage1 === 1" 
+            class="pagination-btn1"
+          >
+            <i class="fas fa-arrow-left"></i> 
+          </button>
+          <span>Trang {{ currentPage1 }} / {{ totalEmployeePages }}</span>
+          <button 
+            @click="nextPage1" 
+            :disabled="currentPage1 === totalEmployeePages" 
+            class="pagination-btn1"
+          >
+             <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      searchQuery: "",
+      detailSearchQuery: "",
+      tableSearchQuery: "",
+      currentPage: 1,
+      currentPage1: 1,
+      currentPageDetails: 1,
+      pageSize: 5,
+      pageSize1: 10,
+      pageSizeDetails: 5,
+      sortField: "name",
+      sortDirection: 1,
+      sortDetailField: "nameNV",
+      sortDetailDirection: 1,
+      activeMenu: null,
+      activeProject: null,
+      activeDetail: null,
+       projects: [
+        {
+          id: 1, 
+          name: "ABC", 
+          department: "Kinh Doanh",
+          details: [
+            { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
+            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
+            { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
+            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" }
+          ]
+        },
+        {
+          id: 2, 
+          name: "TechSign", 
+          department: "Phát Triển",
+          details: [
+            { nameNV: "Lê Thị B", department: "Phát Triển", position: "Developer", avatar: "path/to/avatar3.jpg" },
+            { nameNV: "Trần Văn C", department: "Phát Triển", position: "Tester", avatar: "path/to/avatar4.jpg" },
+            { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
+            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
+            { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
+            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
+            { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
+            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
+            { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
+            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
+          ]
+        },
+        {
+          id: 3, 
+          name: "TechAssess", 
+          department: "Kinh Doanh",
+          details: [
+            { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
+            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
+            { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
+            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" }
+          ]
+        },
+        {
+          id: 4, 
+          name: "AdC", 
+          department: "Kinh Doanh",
+          details:[
+          ]
+        },
+      ],
+      employees: [
+        { name: 'Ha Canh Minh Quang', department: 'Phát triển', role: 'Senior',position: "Manager", avatar: "path/to/avatar1.jpg" },
+        { name: 'Nguyen Van A', department: 'Tổng vụ', role: 'Fresher',position: "Manager", avatar: "path/to/avatar1.jpg" },
+        { name: 'Le Van B', department: 'Phát triển', role: 'Junior',position: "Manager", avatar: "path/to/avatar1.jpg" },
+        { name: 'Tran Van C', department: 'Phát triển', role: 'Senior',position: "Manager", avatar: "path/to/avatar1.jpg" },
+        { name: 'Ho Xuan D', department: 'Phát triển', role: 'Middle',position: "Manager", avatar: "path/to/avatar1.jpg" },
+        { name: 'Tan Tai', department: 'Global', role: 'Senior',position: "Manager", avatar: "path/to/avatar1.jpg" },
+        { name: 'Nguyen Nguyen', department: 'Tổng vụ', role: 'Fresher',position: "Manager", avatar: "path/to/avatar1.jpg" },
+        { name: 'Dinh Tien', department: 'Phát triển', role: 'Junior',position: "Manager", avatar: "path/to/avatar1.jpg" },
+        { name: 'Nguyen Nguyen A', department: 'Tổng vụ', role: 'Fresher',position: "Manager", avatar: "path/to/avatar1.jpg" },
+        { name: 'Dinh Tien V', department: 'Phát triển', role: 'Junior',position: "Manager", avatar: "path/to/avatar1.jpg" },
+      ],
+      selectedEmployees: [],
+      selectedProject: null,
+      selectedProjectDetails: [],
+      showAddEmployee: false,
+      previousSelectedProject: null
+    };
+  },
+  computed: {
+    filteredEmployees() {
+  const lowerCaseQuery = this.tableSearchQuery ? this.tableSearchQuery.toLowerCase() : "";
+  const filtered = this.employees.filter(employee => {
+    return (
+      (employee.name && employee.name.toLowerCase().includes(lowerCaseQuery)) ||
+      (employee.department && employee.department.toLowerCase().includes(lowerCaseQuery)) ||
+      (employee.role && employee.role.toLowerCase().includes(lowerCaseQuery))
+    );
+  });
+  return filtered;
+},
+paginatedEmployees() {
+    const start = (this.currentPage1 - 1) * this.pageSize1;
+    return this.filteredEmployees.slice(start, start + this.pageSize1);
+  },
+  totalEmployeePages() {
+    return Math.ceil(this.filteredEmployees.length / this.pageSize1);
+  },
+    filteredProjects() {
+      let filtered = this.projects.filter((project) => {
+        const lowerCaseQuery = this.searchQuery.toLowerCase();
+        return (
+          project.name.toLowerCase().includes(lowerCaseQuery) ||
+          project.department.toLowerCase().includes(lowerCaseQuery)
+        );
+      });
+
+      filtered.sort((a, b) => {
+        return this.sortDirection * a[this.sortField].toLowerCase().localeCompare(b[this.sortField].toLowerCase());
+      });
+
+      return filtered;
     },
-    computed: {
-      filteredProjects() {
-        let filtered = this.projects.filter((project) => {
-          const lowerCaseQuery = this.searchQuery.toLowerCase();
+    paginatedProjects() {
+      const start = (this.currentPage - 1) * this.pageSize;
+      return this.filteredProjects.slice(start, start + this.pageSize);
+    },
+    totalPages() {
+      return Math.ceil(this.filteredProjects.length / this.pageSize);
+    },
+    filteredDetails() {
+      if (this.selectedProject) {
+        let details = this.selectedProject.details.filter((detail) => {
+          const lowerCaseQuery = this.detailSearchQuery.toLowerCase();
           return (
-            project.name.toLowerCase().includes(lowerCaseQuery) ||
-            project.department.toLowerCase().includes(lowerCaseQuery)
+            detail.nameNV.toLowerCase().includes(lowerCaseQuery) ||
+            detail.department.toLowerCase().includes(lowerCaseQuery) ||
+            detail.position.toLowerCase().includes(lowerCaseQuery)
           );
         });
-  
-        filtered.sort((a, b) => {
-          return this.sortDirection * a[this.sortField].toLowerCase().localeCompare(b[this.sortField].toLowerCase());
+
+        details.sort((a, b) => {
+          return this.sortDetailDirection * a[this.sortDetailField].toLowerCase().localeCompare(b[this.sortDetailField].toLowerCase());
         });
-  
-        return filtered;
-      },
-      paginatedProjects() {
-        const start = (this.currentPage - 1) * this.pageSize;
-        return this.filteredProjects.slice(start, start + this.pageSize);
-      },
-      totalPages() {
-        return Math.ceil(this.filteredProjects.length / this.pageSize);
-      },
-      filteredDetails() {
-        if (this.selectedProject) {
-          let details = this.selectedProject.details.filter((detail) => {
-            const lowerCaseQuery = this.detailSearchQuery.toLowerCase();
-            return (
-              detail.nameNV.toLowerCase().includes(lowerCaseQuery) ||
-              detail.department.toLowerCase().includes(lowerCaseQuery) ||
-              detail.position.toLowerCase().includes(lowerCaseQuery)
-            );
-          });
-  
-          details.sort((a, b) => {
-            return this.sortDetailDirection * a[this.sortDetailField].toLowerCase().localeCompare(b[this.sortDetailField].toLowerCase());
-          });
-  
-          return details;
-        }
-        return [];
-      },
+
+        return details;
+      }
+      return [];
     },
-    methods: {
-      sort(field) {
-        if (this.sortField === field) {
-          this.sortDirection *= -1;
-        } else {
-          this.sortField = field;
-          this.sortDirection = 1;
-        }
-      },
-      sortDetail(field) {
-        if (this.sortDetailField === field) {
-          this.sortDetailDirection *= -1;
-        } else {
-          this.sortDetailField = field;
-          this.sortDetailDirection = 1;
-        }
-      },
-      viewProjectDetails(project) {
-        this.selectedProject = project;
-        this.selectedProjectDetails = project.details;
-      },
-      closeProjectDetails() {
-        this.selectedProject = null;
-        this.selectedProjectDetails = [];
-      },
-      toggleMenu(type, item) {
-        if (type === 'project') {
-          if (this.activeProject === item) {
-            this.activeProject = null; // Close the menu if clicked again
-          } else {
-            this.activeProject = item;
-            this.activeMenu = 'project';
-            this.activeDetail = null; // Close detail menu if open
-          }
-        } else if (type === 'detail') {
-          if (this.activeDetail === item) {
-            this.activeDetail = null; // Close the menu if clicked again
-          } else {
-            this.activeDetail = item;
-            this.activeMenu = 'detail';
-            this.activeProject = null; // Close project menu if open
-          }
-        }
-      },
-      prevPage() {
-        if (this.currentPage > 1) {
-          this.currentPage -= 1;
-        }
-      },
-      nextPage() {
-        if (this.currentPage < this.totalPages) {
-          this.currentPage += 1;
-        }
-      },
+  },
+  methods: {
+    add() {
+      const selectedEmployeeDetails = this.selectedEmployees.map(index => this.employees[index]);
+      if (this.previousSelectedProject) {
+        selectedEmployeeDetails.forEach(employee => {
+          this.previousSelectedProject.details.push({
+            nameNV: employee.name,
+            department: employee.department,
+            position: employee.role,
+            avatar: "path/to/default-avatar.jpg", 
+          });
+        });
+      }
+      this.closeAddEmployeeModal();
     },
-  };
-  
-  </script>
+    removeDetail(detail) {
+      const index = this.selectedProject.details.indexOf(detail);
+      if (index !== -1) {
+        this.selectedProject.details.splice(index, 1);
+      }
+    },
+
+    toggleEmployee(index) {
+      if (this.selectedEmployees.includes(index)) {
+        this.selectedEmployees = this.selectedEmployees.filter(i => i !== index);
+      } else {
+        this.selectedEmployees.push(index);
+      }
+    },
+    prevPage1() {
+    if (this.currentPage1 > 1) {
+      this.currentPage1 -= 1;
+    }
+  },
+  nextPage1() {
+    if (this.currentPage1 < this.totalEmployeePages) {
+      this.currentPage1 += 1;
+    }
+  },
+    // add() {
+    //   // Handle add logic here
+    //   console.log('Add clicked');
+    //   // Get selected employee names
+    //   const selectedEmployeeNames = this.selectedEmployees.map(index => this.employees[index].name);
+    //   console.log('Selected employees:', selectedEmployeeNames);
+    // },
+  sort(field) {
+    if (this.sortField === field) {
+      this.sortDirection *= -1;
+    } else {
+      this.sortField = field;
+      this.sortDirection = 1;
+    }
+  },
+  sortDetail(field) {
+    if (this.sortDetailField === field) {
+      this.sortDetailDirection *= -1;
+    } else {
+      this.sortDetailField = field;
+      this.sortDetailDirection = 1;
+    }
+  },
+  viewProjectDetails(project) {
+    this.selectedProject = project;
+    this.showAddEmployee = false; // Ensure Add Employee modal is hidden
+  },
+  closeProjectDetails() {
+    this.selectedProject = null;
+  },
+  showAddEmployeeModal() {
+    this.showAddEmployee = true;
+    this.previousSelectedProject = this.selectedProject; // Store the currently selected project
+    this.selectedProject = null; // Hide project details modal
+  },
+  closeAddEmployeeModal() {
+    this.showAddEmployee = false;
+    // Reopen project details modal if a project was previously selected
+    if (this.previousSelectedProject) {
+      this.selectedProject = this.previousSelectedProject;
+      this.previousSelectedProject = null; // Clear the stored project
+    }
+  },
+  toggleMenu(type, item) {
+    if (type === 'project') {
+      if (this.activeProject === item) {
+        this.activeProject = null; // Close the menu if clicked again
+      } else {
+        this.activeProject = item;
+        this.activeMenu = 'project';
+        this.activeDetail = null; // Close detail menu if open
+      }
+    } else if (type === 'detail') {
+      if (this.activeDetail === item) {
+        this.activeDetail = null; // Close the menu if clicked again
+      } else {
+        this.activeDetail = item;
+        this.activeMenu = 'detail';
+        this.activeProject = null; // Close project menu if open
+      }
+    }
+  },
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage -= 1;
+    }
+  },
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage += 1;
+    }
+  },
+}
+};
+</script>
+
+
       <style scoped>
       .container {
       display: flex;
@@ -324,7 +478,7 @@
   
   .menu-dropdown {
     position: absolute;
-    top: -110%;
+    top: -50%;
     left: 60%; 
     display: none;
     z-index: 2;
@@ -333,6 +487,7 @@
     transition: opacity 0.3s ease, transform 0.3s ease;
     opacity: 0; 
     transform: translateY(-10px); 
+    
   }
   
   
@@ -340,19 +495,21 @@
     display: block;
     opacity: 1; 
     transform: translateY(0); 
+    border: 1px solid white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   }
   
   .menu-item {
-    padding: 10px 20px;
+    padding: 5px 10px;
     border: none;
-    background: #f8f9fa; 
+    background:none; 
     cursor: pointer;
     font-size: 14px;
     text-align: left;
     display: flex;
     align-items: center;
     transition: background-color 0.3s ease, color 0.3s ease;
-    border-radius: 5px; 
+    
   }
   
   .menu-item:hover {
@@ -380,6 +537,7 @@
       justify-content: flex-start;
       width: 90%;
       margin-bottom: 20px;
+      margin-top: 20px;
       }
       .add-btn {
       background-color: #17a2b8;
@@ -477,7 +635,9 @@
     background-color: #f0f8ff; 
     cursor: pointer; 
   }
-  
+  .pagination span{
+       margin-top: 30px;
+  }
   
       .pagination-btn {
       margin: 10px 10px;
@@ -687,7 +847,7 @@
     padding: 8px;
   
   }
-  .add-btn2 {
+  /* .add-btn2 {
     background-color: #007bff;
     color: white;
     border: none;
@@ -702,7 +862,8 @@
     transition: background-color 0.3s ease;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     margin: 0 auto;
-  }
+    padding: 20px 10px ;
+  } */
   
   .add-btn2:hover {
     background-color: #0056b3;
@@ -724,6 +885,7 @@
   }
   .project-details-title {
   margin-bottom:-30px;
+  text-align: center;
   }
   .project-details{
     margin-top: -10px;
@@ -732,5 +894,102 @@
     align-items: center; 
     width: 100%;
   }
+  .search-bar1 {
+       padding: 10px;
+      width: 300px;
+      border-radius: 25px;
+      border: 1px solid #ddd;
+      outline: none;
+      transition: border-color 0.3s ease;
+      margin-top: 10px;
+      margin-bottom: 10px;
+}
+
+.table-container {
+  height: 470px; 
+  overflow-y: auto;
+}
+.employee-table {
+  width: 100%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.employee-table th, td {
+  text-align: left;
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+.employee-table th {
+  background-color: #f2f2f2;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+ .add1-btn {
+  padding: 10px 20px;
+  margin: 0 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.cancel-btn{
+  padding: 10px 20px;
+  margin: 0 10px;
+  background-color: #af5c4c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+ .add1-btn:hover {
+  opacity: 0.8;
+  background-color: #2b5407;
+}
+.cancel-btn:hover{
+  opacity: 0.8;
+  background-color: #7e0909;
+}
+.modal-title{
+  text-align: center;
+}
+       .pagination1 span{
+       margin-top: 30px;
+        }
+        .pagination1{
+          text-align: center;
+        }
+  
+      .pagination-btn1 {
+      margin: 10px 10px;
+      padding: 8px 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+      }
+  
+      .pagination-btn1:hover {
+      background-color: #0056b3;
+      }
+      .pagination-btn1:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+      }
   </style>
   
