@@ -1,5 +1,5 @@
 <template>
- <ManageProjects></ManageProjects>
+ <ManageProjects/>
 </template>
 <script>
 // import AdminTech from './components/EmployeeManager.vue';
