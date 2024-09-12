@@ -47,5 +47,9 @@
     top: 0;
     left: 0;
   }
+  .nav-item:hover {
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(118, 116, 116, 0.603); /* Customize the shadow as needed */
+}
   </style>
   
