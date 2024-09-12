@@ -15,7 +15,7 @@
       </div>
     </nav>
     <div class="table-responsive-md mt-2">
-      <table class="table table-striped table-hover table-bordered m-0 center" border="1" style="text-align: center">
+      <table class="table table-striped table-hover table-bordered m-0 center" style="text-align: center">
         <thead class="table-success">
           <tr>
             <th scope="col">ID</th>

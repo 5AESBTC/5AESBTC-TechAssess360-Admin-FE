@@ -24,3 +24,17 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.app-container {
+  display: flex;
+  height: 100vh; 
+}
+
+.main-content {
+  flex-grow: 1;
+  padding-left: 350px;
+  padding-right: 50px;
+  overflow: auto;
+}
+</style>
