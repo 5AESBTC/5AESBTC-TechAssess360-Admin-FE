@@ -1,25 +1,22 @@
 <template>
   <div id="app" class="d-flex flex-column min-vh-100">
-    <Sidebar v-if="$route.path !== '/login' && $route.path !== '/register'" />
-    <div class="content-wrapper flex-grow-1 d-flex flex-column" :style="{ marginLeft: $route.path !== '/login' && $route.path !== '/register' ? '200px' : '0' }">
-      <Navbar v-if="$route.path !== '/login' && $route.path !== '/register'" />
-      <main class="flex-grow-1 p-4">
-        <EmployeeManager/>
-      </main>
-      <Footer v-if="$route.path !== '/login' && $route.path !== '/register'" />
+    <div class="sidebar">
+      <Sidebar/>
+    </div>
+    <div class="main-content">
+      <div class="main-content-wrapper">
+        <router-view />
+      </div>
     </div>
   </div>
 </template>
 <script>
-import EmployeeManager from './components/EmployeeManager.vue';
-// import ManageProjects from './components/ManageProjects.vue';
 import Sidebar from './components/Sidebar.vue';
 
 
 export default {
   name: 'App',
   components:{
-    EmployeeManager,
     Sidebar
   }
 };
@@ -30,11 +27,19 @@ export default {
   display: flex;
   height: 100vh; 
 }
-
+.sidebar{
+  width: 15%;
+  
+}
 .main-content {
+  margin-left: 15%;
+  display: flex;
+  justify-content: center;
   flex-grow: 1;
-  padding-left: 350px;
-  padding-right: 50px;
   overflow: auto;
+}
+.main-content-wrapper{
+  width: 80%;
+  text-align: center;
 }
 </style>
