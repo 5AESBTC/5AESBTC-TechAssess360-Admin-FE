@@ -1,0 +1,315 @@
+<template>
+    <!-- Project Details Modal -->
+    <div class="modal-overlay" @click.self="close">
+        <div class="modal-container">
+            <button class="close-btn" @click="close">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 class="project-details-title">Chi tiết dự án {{ project.name }}</h2>
+            <div class="detail-header text-start">
+                <button @click="showAddEmployeeIntoProjectModal" class="btn btn-success me-3">
+                    Thêm nhân viên
+                </button>
+                <input type="text" v-model="detailSearchQuery" placeholder="Tìm kiếm nhân viên..."
+                    class="search-bar detail-search-bar" />
+            </div>
+            <!-- Detail Table -->
+            <div class="detail-table-container">
+                <table class="detail-table">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Avatar</th>
+                            <th @click="sortDetail('nameNV')">Tên NV</th>
+                            <th @click="sortDetail('department')">Bộ phận</th>
+                            <th @click="sortDetail('position')">Chức vụ</th>
+                            <th>Tác vụ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(detail, index) in filteredDetails" :key="index">
+                            <td>{{ index + 1 }}</td>
+                            <td><img :src="detail.avatar" alt="Avatar" class="avatar-img" /></td>
+                            <td>{{ detail.nameNV }}</td>
+                            <td>{{ detail.department }}</td>
+                            <td>{{ detail.position }}</td>
+                            <td><button type="button" class="btn btn-danger">Xoá</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Add Employee Into Project Modal -->
+    <AddEmployeeIntoProject v-if="isShowAddEmployeeIntoProjectModal"
+        :showAddEmployee="isShowAddEmployeeIntoProjectModal" :project="project"
+        @close="closeAddEmployeeIntoProjectModal" @add="addEmployee" />
+</template>
+
+<script>
+import AddEmployeeIntoProject from './AddEmployeeIntoProject.vue';
+
+export default {
+    name: 'ProjectDetails',
+    components: {
+        AddEmployeeIntoProject
+    },
+    props: {
+        project: {
+            type: Object,
+            required: true,
+        },
+    },
+    computed: {
+        filteredDetails() {
+            const query = this.detailSearchQuery ? this.detailSearchQuery.toLowerCase() : "";
+            return this.project.details.filter(detail =>
+                detail.nameNV.toLowerCase().includes(query) ||
+                detail.department.toLowerCase().includes(query) ||
+                detail.position.toLowerCase().includes(query)
+            );
+        },
+    },
+    data() {
+        return {
+            detailSearchQuery: "",
+            isShowAddEmployeeIntoProjectModal: false,
+            sortDetailField: '',
+            sortDetailDirection: 1
+        };
+    },
+    methods: {
+        submitForm() {
+            // Kiểm tra tính hợp lệ của dữ liệu
+            if (!this.newProject.name.trim()) {
+                alert("Vui lòng nhập tên dự án.");
+                return;
+            }
+            if (!this.selectedDepartment) {
+                alert("Vui lòng chọn bộ phận.");
+                return;
+            }
+            if (!this.newProject.startDate || !this.newProject.endDate) {
+                alert("Vui loại chọn ngày bắt đã và ngày kết thúc.");
+                return;
+            }
+            if (this.newProject.startDate > this.newProject.endDate) {
+                alert("Ngày bắt đầu phải trước ngày kết thúc.");
+                return;
+            }
+            this.addProject(this.newProject);
+
+            this.resetForm();
+            // Đóng modal sau khi lưu
+            this.closeModal();
+        },
+        addProject(project) {
+            this.newProject.department = this.selectedDepartment;
+            this.addDetailsToNewProject(this.selectedDepartment);
+            this.projects.push(project);
+        },
+        resetForm() {
+            const today = this.newProject.startDate; // Giữ lại giá trị ngày mặc định
+            this.newProject = {
+                name: "",
+                department: "",
+                startDate: null,
+                endDate: null,
+                details: [],
+            };
+            this.newProject.startDate = today; // Khôi phục giá trị ngày mặc định
+            this.selectedDepartment = "";
+        },
+        close() {
+            this.$emit('close');
+        },
+        sortDetail(field) {
+            if (this.sortDetailField === field) {
+                this.sortDetailDirection *= -1;
+            } else {
+                this.sortDetailField = field;
+                this.sortDetailDirection = 1;
+            }
+        },
+        showAddEmployeeIntoProjectModal() {
+            this.isShowAddEmployeeIntoProjectModal = true;
+        },
+        closeAddEmployeeIntoProjectModal() {
+            this.isShowAddEmployeeIntoProjectModal = false;
+        },
+        addEmployee() {
+            this.closeAddEmployeeIntoProjectModal();
+        }
+    }
+}
+</script>
+
+
+<style scoped>
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Modal Container */
+.modal-container {
+    background-color: #fff;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 1200px;
+    padding: 20px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: auto;
+}
+
+.close-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.close-btn:hover {
+    background-color: #c82333;
+}
+
+.close-btn i {
+    font-size: 20px;
+}
+
+.avatar-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.detail-search-bar {
+    margin-top: 50px;
+    width: calc(100% - 50px);
+    padding: 8px;
+}
+
+.detail-table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 100%;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.detail-table thead {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #17a2b8;
+}
+
+.detail-table-container {
+    max-height: 400px;
+    overflow-y: auto;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+
+}
+
+.details-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.detail-header {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.detail-table-container::-webkit-scrollbar {
+    display: none;
+}
+
+.detail-table td {
+    font-size: 16px;
+}
+
+.detail-table tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.detail-table tr:hover {
+    background-color: #e9ecef;
+}
+
+.detail-table tr:nth-child(even) {
+    background-color: #f1f3f5;
+}
+
+.detail-table th,
+.detail-table td {
+    padding: 20px;
+    border-bottom: 1px solid #f0f0f0;
+    text-align: center;
+}
+
+.detail-table th {
+    background-color: #17a2b8;
+    color: white;
+    font-weight: 600;
+    font-size: 18px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.detail-table td {
+    padding: 16px;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 16px;
+    height: 40px;
+}
+
+.detail-search-bar {
+    width: 250px;
+    border-radius: 25px;
+    border: 1px solid #ddd;
+    outline: none;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease;
+}
+
+.detail-search-bar:focus {
+    border-color: #007bff;
+}
+</style>
