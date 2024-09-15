@@ -16,28 +16,32 @@
         <thead>
           <tr>
             <th scope="col">STT</th>
+            <th scope="col">Ảnh đại diện</th>
             <th scope="col">Tên</th>
-            <th scope="col">Tài khoản</th>
-            <th scope="col">Bộ phận</th>
             <th scope="col">Chức vụ</th>
             <th scope="col">Cấp bậc</th>
+            <th scope="col">Dự án hiện tại</th>
             <th scope="col">Ngày vào công ty</th>
+            <th scope="col">Đánh giá</th>
             <th scope="col">Tác vụ</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(employee, index) in paginatedEmployees" :key="employee.id">
             <td>{{ index + 1 }}</td>
+            <td><img :src="employee.avatar" class="employee-img" /></td>
             <td>{{ employee.name }}</td>
-            <td>{{ employee.username }}</td>
-            <td>{{ employee.department }}</td>
             <td>{{ employee.position }}</td>
             <td>{{ employee.level }}</td>
+            <td>{{ employee.project }}</td>
             <td>{{ employee.dateJoinCompany }}</td>
+            <td class="">
+              <button v-if="employee.position == 'Manager'" class="btn btn-primary me-2">Đánh giá</button>
+              <button class="btn btn-info">Xem đánh giá</button>
+            </td>
             <td>
               <a type='button' class="btn btn-warning me-3" @click="editEmployee(employee)">Sửa</a>
-              <button class="btn btn-primary me-3">Đánh giá</button>
-              <button type="button" class="btn btn-danger" @click="deleteEmployee(employee.id)">Xoá</button>
+              <button type="button" class="btn btn-danger" @click="confirmDeleteEmployee(employee.id)">Xoá</button>
             </td>
           </tr>
         </tbody>
@@ -56,9 +60,9 @@
     </div>
 
     <!-- Modal Component -->
-    <AddEmployeeModal :isVisible="isModalVisible" @close="closeModal" @add-employee="addEmployee" />
-    <EditEmployeeModal :is-visible1="isModalVisible1" :employeeData="selectedEmployee" @close="closeModal1"
-      @update="handleUpdate" />
+    <AddEmployeeModal :isVisible="isModalVisible" @close="closeModal" @employee-added="fetchEmployees" />
+    <EditEmployeeModal :is-visible1="isModalVisible1" :employeeData="selectedEmployee" @close="closeEmployeeEditModal"
+      @employee-edited="fetchEmployees" />
   </div>
 </template>
 
@@ -66,6 +70,8 @@
 import AddEmployeeModal from './modal/AddEmployeeModal.vue';
 import axios from 'axios';
 import EditEmployeeModal from './modal/EditEmployeeModal.vue';
+import Swal from 'sweetalert2';
+
 export default {
   components: {
     AddEmployeeModal,
@@ -78,13 +84,14 @@ export default {
       isModalVisible1: false,
       selectedEmployee: null,
       employees: [],
+      projects: [],
       currentPage: 1,
-      itemsPerPage: 4,
+      itemsPerPage: 10,
     };
   },
   mounted() {
-    console.log('API URL from env:', process.env.VUE_APP_DB_URL);
     this.fetchEmployees();
+    this.fetchProjects();
   },
   computed: {
     totalPages() {
@@ -100,7 +107,6 @@ export default {
   methods: {
     async fetchEmployees() {
       try {
-        console.log('API URL:', this.apiUrl);
         const response = await axios.get(this.apiUrl + '/employees');
         this.employees = response.data;
         console.log(this.employees);
@@ -108,37 +114,84 @@ export default {
         console.error('Error fetching employees:', error);
       }
     },
-    async deleteEmployee(id) {
+    async fetchProjects() {
       try {
-        await axios.delete(this.apiUrl + `/employees/${id}`);
-        this.fetchEmployees();
+        const response = await axios.get(this.apiUrl + '/projects');
+        this.projects = response.data;
       } catch (error) {
-        console.error('Error deleting employee:', error);
+        console.error('Error fetching employees:', error);
       }
+    },
+    async confirmDeleteEmployee(id) {
+
+      const result = await Swal.fire({
+        title: "Bạn có muốn xóa nhân viên này?",
+        icon: 'warning',
+        showCancelButton: true,
+      })
+      if (result.isConfirmed) {
+        try {
+          const employeeResponse = await axios.get(this.apiUrl + `/employees/${id}`);
+          const employee = employeeResponse.data;
+
+          if (!this.projects || this.projects.length === 0) {
+            await this.fetchProjects();
+          }
+
+          const project = this.projects.find(proj => proj.name === employee.project);
+
+          if (project) {
+            project.members = project.members.filter(emp => emp !== employee.username);
+            await axios.put(this.apiUrl + `/projects/${project.id}`, project);
+          } else {
+            console.warn(`Không tìm thấy dự án cho nhân viên: ${employee.name}`);
+          }
+
+          await axios.delete(this.apiUrl + `/employees/${id}`);
+
+          Swal.fire({
+            title: 'Đã xóa!',
+            text: 'Nhân viên đã được xóa thành công.',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false
+          });
+
+          this.fetchEmployees();
+        } catch (error) {
+          console.error('Lỗi khi xóa nhân viên:', error);
+          Swal.fire({
+            title: 'Lỗi!',
+            text: 'Đã xảy ra lỗi khi xóa nhân viên.',
+            icon: 'error'
+          });
+        }
+      }
+
     },
 
     openModal() {
       this.isModalVisible = true;
     },
-    openModal1() {
+    showEmployeeEditModal() {
       this.isModalVisible1 = true;
     },
     closeModal() {
       this.isModalVisible = false;
     },
-    closeModal1() {
+    closeEmployeeEditModal() {
       this.isModalVisible1 = false;
     },
     editEmployee(employee) {
       this.selectedEmployee = { ...employee }
-      this.openModal1();
+      this.showEmployeeEditModal();
     },
     handleUpdate(updatedEmployee) {
       const index = this.DataTest.findIndex(emp => emp.id === updatedEmployee.id);
       if (index !== -1) {
         this.DataTest.splice(index, 1, updatedEmployee);
       }
-      this.closeModal1();
+      this.closeEmployeeEditModal();
     },
 
     prevPage() {
@@ -254,5 +307,10 @@ export default {
 .pagination-btn:disabled {
   background-color: #aaa;
   cursor: not-allowed;
+}
+
+.employee-img {
+  width: 40px;
+  border-radius: 50%;
 }
 </style>
