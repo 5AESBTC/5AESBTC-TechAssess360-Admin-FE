@@ -15,9 +15,11 @@
                     <thead>
                         <tr>
                             <th class="checkbox">Chọn</th>
+                            <th style="width: 150px;">Ảnh đại diện</th>
                             <th style="width: 350px;">Tên</th>
-                            <th>Bộ phận</th>
-                            <th>Chức vụ</th>
+                            <th>Vị trí</th>
+                            <th>Cấp bậc</th>
+                            <th>Ngày vào công ty</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -26,9 +28,11 @@
                                 <input class="form-check-input" type="checkbox"
                                     :checked="selectedEmployees.includes(index)" @click="toggleEmployee(index)">
                             </td>
+                            <td><img :src="item.avatar" class="employee-img" /></td>
                             <td>{{ item.name }}</td>
-                            <td>{{ item.department }}</td>
-                            <td>{{ item.role }}</td>
+                            <td>{{ item.position }}</td>
+                            <td>{{ item.level }}</td>
+                            <td>{{ item.dateJoinCompany }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -51,6 +55,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: 'AddEmployeeIntoProject',
     props: {
@@ -66,24 +72,16 @@ export default {
     emits: ['close', 'add'],
     data() {
         return {
+            apiUrl: process.env.VUE_APP_DB_URL,
             tableSearchQuery: "",
             selectedEmployees: [],
             currentPage: 1,
             pageSize1: 10,
-            employees: [
-                { name: 'Ha Canh Minh Quang', department: 'Phát triển', role: 'Senior' },
-                { name: 'Nguyen Van A', department: 'Tổng vụ', role: 'Fresher' },
-                { name: 'Le Van B', department: 'Phát triển', role: 'Junior' },
-                { name: 'Tran Van C', department: 'Phát triển', role: 'Senior' },
-                { name: 'Ho Xuan D', department: 'Phát triển', role: 'Middle' },
-                { name: 'Tan Tai', department: 'Global', role: 'Senior' },
-                { name: 'Nguyen Nguyen', department: 'Tổng vụ', role: 'Fresher' },
-                { name: 'Dinh Tien', department: 'Phát triển', role: 'Junior' },
-                { name: 'Nguyen Nguyen A', department: 'Tổng vụ', role: 'Fresher' },
-                { name: 'Dinh Tien V', department: 'Phát triển', role: 'Junior' },
-                { name: 'Le Van B', department: 'Phát triển', role: 'Junior' },
-            ],
+            employees: [],
         };
+    },
+    mounted() {
+        this.fetchEmployees()
     },
     computed: {
         filteredEmployees() {
@@ -103,7 +101,15 @@ export default {
         },
     },
     methods: {
-
+        async fetchEmployees() {
+            try {
+                const response = await axios.get(this.apiUrl + '/employees');
+                this.employees = response.data;
+                console.log(this.employees);
+            } catch (error) {
+                console.error('Error fetching employees:', error);
+            }
+        },
         add() {
             const selectedEmployeeDetails = this.selectedEmployees.map(index => this.employees[index]);
             if (this.previousSelectedProject) {
@@ -291,5 +297,9 @@ td {
     transition: border-color 0.3s ease;
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+.employee-img {
+    width: 35%;
 }
 </style>

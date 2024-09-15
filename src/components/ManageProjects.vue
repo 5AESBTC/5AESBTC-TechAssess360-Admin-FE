@@ -18,7 +18,6 @@
           <th>STT</th>
           <th @click="sort('name')">Dự án</th>
           <th>Số lượng thành viên</th>
-          <th @click="sort('department')">Bộ phận</th>
           <th>Ngày bắt đầu</th>
           <th>Ngày kết thúc</th>
           <th>Tác vụ</th>
@@ -26,15 +25,14 @@
       </thead>
       <tbody>
         <tr v-for="(project, index) in paginatedProjects" :key="project.id">
-          <td>{{ (currentPage - 1) * pageSize + index + 1 }}</td>
+          <td>{{ (currentPageProjects - 1) * pageSizeProjects + index + 1 }}</td>
           <td class="project-name" @click="showProjectDetailsModal(project)">{{ project.name }}</td>
-          <td>{{ project.details.length }}</td>
-          <td>{{ project.department }}</td>
+          <td>{{ project.members.length }}</td>
           <td>{{ project.startDate }}</td>
           <td>{{ project.endDate }}</td>
           <td>
             <button type='button' class="btn btn-warning me-3">Cập nhật</button>
-            <button type="button" class="btn btn-danger">Xoá</button>
+            <button type="button" class="btn btn-danger" @click="deleteProject(project.id)">Xoá</button>
           </td>
         </tr>
       </tbody>
@@ -42,17 +40,17 @@
 
     <!-- Pagination -->
     <div class="pagination">
-      <button @click="prevPage" :disabled="currentPage === 1" class="pagination-btn">
+      <button @click="prevPage" :disabled="currentPageProjects === 1" class="pagination-btn">
         <i class="fas fa-arrow-left"></i>
       </button>
-      <span>Trang {{ currentPage }} / {{ totalPages }}</span>
-      <button @click="nextPage" :disabled="currentPage === totalPages" class="pagination-btn">
+      <span>Trang {{ currentPageProjects }} / {{ totalPages }}</span>
+      <button @click="nextPage" :disabled="currentPageProjects === totalPages" class="pagination-btn">
         <i class="fas fa-arrow-right"></i>
       </button>
     </div>
 
     <!-- Add Project Modal -->
-    <AddProject v-if="isShowProjectAddModal" @close="closeModalAddproject" />
+    <AddProject v-if="isShowProjectAddModal" @close="closeModalAddproject" @project-fetch="fetchProjects" />
     <!-- Project Detail Modal -->
     <ProjectDetails v-if="isShowProjectDetailsModal" :project="selectedProject" @close="closeProjectDetailsModal" />
   </div>
@@ -61,24 +59,28 @@
 <script>
 import AddProject from './modal/AddProject.vue';
 import ProjectDetails from './modal/ProjectDetails.vue';
-
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default {
+
+  name: 'ProjectsManage',
   components: {
     AddProject,
     ProjectDetails,
   },
   data() {
     return {
+      apiUrl: process.env.VUE_APP_DB_URL,
       isShowProjectAddModal: false,
       isShowProjectDetailsModal: false,
       searchQuery: "",
       tableSearchQuery: "",
-      currentPage: 1,
-      currentPage1: 1,
+      currentPageProjects: 1,
+      currentPageEmployees: 1,
       currentPageDetails: 1,
-      pageSize: 5,
-      pageSize1: 10,
+      pageSizeProjects: 10,
+      pageSizeEmployees: 10,
       pageSizeDetails: 5,
       sortField: "name",
       sortDirection: 1,
@@ -88,56 +90,8 @@ export default {
       activeProject: null,
       activeDetail: null,
       isModalVisible: false,
-      projects: [
-        {
-          id: 1,
-          name: "TechSale",
-          department: "Phát triển",
-          startDate: "2022-01-01",
-          endDate: "2022-02-31",
-          details: [
-            { nameNV: "Trịnh Thái Quân", department: "Phát triển", position: "Middle", avatar: "path/to/avatar1.jpg" },
-            { nameNV: "Nguyễn Văn A", department: "Phát triển", position: "Fresher", avatar: "path/to/avatar2.jpg" },
-            { nameNV: "Trịnh Thái Quân", department: "Phát triển", position: "Manager", avatar: "path/to/avatar1.jpg" },
-            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar2.jpg" }
-          ]
-        },
-        {
-          id: 2,
-          name: "TechSign",
-          department: "Phát Triển",
-          startDate: "2022-02-02",
-          endDate: "2022-03-31",
-          details: [
-            { nameNV: "Lê Thị B", department: "Phát Triển", position: "Middle", avatar: "path/to/avatar3.jpg" },
-            { nameNV: "Trần Văn C", department: "Phát Triển", position: "Tester", avatar: "path/to/avatar4.jpg" },
-            { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Fresher", avatar: "path/to/avatar2.jpg" },
-            { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Middle", avatar: "path/to/avatar2.jpg" },
-            { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Junior", avatar: "path/to/avatar2.jpg" },
-            { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
-          ]
-        },
-        {
-          id: 3,
-          name: "TechAssess",
-          department: "Kinh Doanh",
-          startDate: "2022-02-02",
-          endDate: "2022-03-31",
-          details: [
-            { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" },
-            { nameNV: "Trịnh Thái Quân", department: "Kinh Doanh", position: "Manager", avatar: "path/to/avatar1.jpg" },
-            { nameNV: "Nguyễn Văn A", department: "Kinh Doanh", position: "Sales", avatar: "path/to/avatar2.jpg" }
-          ]
-        },
-      ],
-
+      projects: [],
       selectedDepartment: "",
-      // projects: [],
       selectedEmployees: [],
       selectedProject: null,
       selectedProjectDetails: [],
@@ -145,29 +99,15 @@ export default {
       previousSelectedProject: null
     };
   },
+  mounted() {
+    this.fetchProjects();
+  },
   computed: {
-    filteredEmployees() {
-      const lowerCaseQuery = this.tableSearchQuery ? this.tableSearchQuery.toLowerCase() : "";
-      const filtered = this.employees.filter(employee => {
-        return (
-          (employee.name && employee.name.toLowerCase().includes(lowerCaseQuery)) ||
-          (employee.department && employee.department.toLowerCase().includes(lowerCaseQuery)) ||
-          (employee.role && employee.role.toLowerCase().includes(lowerCaseQuery))
-        );
-      });
-      return filtered;
-    },
-    paginatedEmployees() {
-      const start = (this.currentPage1 - 1) * this.pageSize1;
-      return this.filteredEmployees.slice(start, start + this.pageSize1);
-    },
-
     filteredProjects() {
       let filtered = this.projects.filter((project) => {
         const lowerCaseQuery = this.searchQuery.toLowerCase();
         return (
-          project.name.toLowerCase().includes(lowerCaseQuery) ||
-          project.department.toLowerCase().includes(lowerCaseQuery)
+          project.name.toLowerCase().includes(lowerCaseQuery)
         );
       });
 
@@ -178,15 +118,54 @@ export default {
       return filtered;
     },
     paginatedProjects() {
-      const start = (this.currentPage - 1) * this.pageSize;
-      return this.filteredProjects.slice(start, start + this.pageSize);
+      const start = (this.currentPageProjects - 1) * this.pageSizeProjects;
+      return this.filteredProjects.slice(start, start + this.pageSizeProjects);
     },
     totalPages() {
-      return Math.ceil(this.filteredProjects.length / this.pageSize);
+      return Math.ceil(this.filteredProjects.length / this.pageSizeProjects);
     },
 
   },
   methods: {
+    async fetchProjects() {
+      try {
+        const response = await axios.get(this.apiUrl + '/projects');
+        this.projects = response.data;
+        console.log(this.projects);
+      } catch (error) {
+        console.error('Error fetching projetcs:', error);
+      }
+    },
+    async deleteProject(projectId) {
+      const result = await Swal.fire({
+        title: 'Bạn có chắc chắn muốn xóa dự án này?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Hủy',
+        reverseButtons: true,
+      });
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(`${this.apiUrl}/projects/${projectId}`);
+          this.fetchProjects()
+          Swal.fire({
+            title: 'Đã xóa dự án!',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false,
+          });
+
+        } catch (error) {
+          Swal.fire({
+            title: 'Lỗi!',
+            text: 'Đã xảy ra lỗi khi xóa dự án.',
+            icon: 'error',
+            confirmButtonText: 'Đóng',
+          });
+        }
+      }
+    },
     showModalAddProject() {
       this.isShowProjectAddModal = true;
     },
@@ -206,12 +185,6 @@ export default {
         this.selectedProject.details.push(...employeeDetails);
       }
       this.closeAddEmployeeIntoProjectModal();
-    },
-    showModal() {
-      this.isModalVisible = true;
-    },
-    closeModal() {
-      this.isModalVisible = false;
     },
     // Hàm lọc dự án theo department và thêm details vào project mới
     addDetailsToNewProject(department) {
@@ -233,16 +206,8 @@ export default {
         this.sortDirection = 1;
       }
     },
-    viewProjectDetails(project) {
-      this.selectedProject = project;
-      this.showAddEmployee = false; // Ensure Add Employee modal is hidden
-    },
-    closeProjectDetails() {
-      this.selectedProject = null;
-    },
     closeAddEmployeeModal() {
       this.showAddEmployee = false;
-      // Reopen project details modal if a project was previously selected
       if (this.previousSelectedProject) {
         this.selectedProject = this.previousSelectedProject;
         this.previousSelectedProject = null; // Clear the stored project
@@ -268,13 +233,13 @@ export default {
       }
     },
     prevPage() {
-      if (this.currentPage > 1) {
-        this.currentPage -= 1;
+      if (this.currentPageProjects > 1) {
+        this.currentPageProjects -= 1;
       }
     },
     nextPage() {
-      if (this.currentPage < this.totalPages) {
-        this.currentPage += 1;
+      if (this.currentPageProjects < this.totalPages) {
+        this.currentPageProjects += 1;
       }
     },
   }
