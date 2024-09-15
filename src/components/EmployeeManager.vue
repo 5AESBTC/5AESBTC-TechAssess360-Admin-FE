@@ -17,6 +17,7 @@
           <tr>
             <th scope="col">STT</th>
             <th scope="col">Tên</th>
+            <th scope="col">Tài khoản</th>
             <th scope="col">Bộ phận</th>
             <th scope="col">Chức vụ</th>
             <th scope="col">Cấp bậc</th>
@@ -25,17 +26,18 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="t in paginatedAdmin" :key="t.id">
-            <td>{{ t.id }}</td>
-            <td>{{ t.name }}</td>
-            <td>{{ t.department }}</td>
-            <td>{{ t.position }}</td>
-            <td>{{ t.level }}</td>
-            <td>{{ t.date }}</td>
+          <tr v-for="(employee, index) in paginatedEmployees" :key="employee.id">
+            <td>{{ index + 1 }}</td>
+            <td>{{ employee.name }}</td>
+            <td>{{ employee.username }}</td>
+            <td>{{ employee.department }}</td>
+            <td>{{ employee.position }}</td>
+            <td>{{ employee.level }}</td>
+            <td>{{ employee.dateJoinCompany }}</td>
             <td>
-              <a type='button' class="btn btn-warning me-3" @click="editEmployee(t)">Sửa</a>
+              <a type='button' class="btn btn-warning me-3" @click="editEmployee(employee)">Sửa</a>
               <button class="btn btn-primary me-3">Đánh giá</button>
-              <button type="button" class="btn btn-danger" @click="confirmDelete(t.id)">Xoá</button>
+              <button type="button" class="btn btn-danger" @click="deleteEmployee(employee.id)">Xoá</button>
             </td>
           </tr>
         </tbody>
@@ -43,7 +45,7 @@
     </div>
 
     <!-- Pagination -->
-    <div class="pagination-wrapper">
+    <div class=" pagination-wrapper">
       <button @click="prevPage" :disabled="currentPage === 1" class="pagination-btn">
         <i class="fas fa-arrow-left"></i>
       </button>
@@ -71,31 +73,50 @@ export default {
   },
   data() {
     return {
+      apiUrl: process.env.VUE_APP_DB_URL,
       isModalVisible: false,
       isModalVisible1: false,
       selectedEmployee: null,
-      DataTest: [
-        { id: 1, name: 'Trịnh Thái Quân', username: 'adnka', password: 'akdakd', department: 'a', position: 'Manager', level: '1', date: '1/1/1' },
-        { id: 2, name: 'Quang', department: 'd', position: 'Manager', level: '1' },
-        { id: 3, name: 'Hải', department: 'c', position: 'Manager', level: '2' },
-        { id: 4, name: 'Đại', department: '2', position: 'Manager', level: '1' },
-        { id: 5, name: 'Tùng', department: '1', position: 'Manager', level: '1' },
-      ],
+      employees: [],
       currentPage: 1,
       itemsPerPage: 4,
     };
   },
+  mounted() {
+    console.log('API URL from env:', process.env.VUE_APP_DB_URL);
+    this.fetchEmployees();
+  },
   computed: {
     totalPages() {
-      return Math.ceil(this.DataTest.length / this.itemsPerPage);
+      return Math.ceil(this.employees.length / this.itemsPerPage);
     },
-    paginatedAdmin() {
+
+    paginatedEmployees() {
       const start = (this.currentPage - 1) * this.itemsPerPage;
       const end = start + this.itemsPerPage;
-      return this.DataTest.slice(start, end);
+      return this.employees.slice(start, end);
     }
   },
   methods: {
+    async fetchEmployees() {
+      try {
+        console.log('API URL:', this.apiUrl);
+        const response = await axios.get(this.apiUrl + '/employees');
+        this.employees = response.data;
+        console.log(this.employees);
+      } catch (error) {
+        console.error('Error fetching employees:', error);
+      }
+    },
+    async deleteEmployee(id) {
+      try {
+        await axios.delete(this.apiUrl + `/employees/${id}`);
+        this.fetchEmployees();
+      } catch (error) {
+        console.error('Error deleting employee:', error);
+      }
+    },
+
     openModal() {
       this.isModalVisible = true;
     },
@@ -109,7 +130,7 @@ export default {
       this.isModalVisible1 = false;
     },
     editEmployee(employee) {
-      this.selectedEmployee = { ...employee }; // Đảm bảo tạo một bản sao của đối tượng nhân viên
+      this.selectedEmployee = { ...employee }
       this.openModal1();
     },
     handleUpdate(updatedEmployee) {
@@ -119,21 +140,7 @@ export default {
       }
       this.closeModal1();
     },
-    confirmDelete(id) {
-      const confirmed = window.confirm('Bạn có chắc chắn muốn xóa nhân viên này? ');
-      if (confirmed) {
-        this.deleteUser(id);
-      }
-    },
-    async deleteUser(id) {
-      try {
-        await axios.delete(`https://jsonplaceholder.typicode.com/posts/${id}`);
-        this.DataTest = this.DataTest.filter(emp => emp.id !== id);
-        console.log('Employee deleted successfully');
-      } catch (error) {
-        console.error('Error deleting employee:', error);
-      }
-    },
+
     prevPage() {
       if (this.currentPage > 1) {
         this.currentPage--;

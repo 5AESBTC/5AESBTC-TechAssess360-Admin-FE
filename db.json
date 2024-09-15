@@ -1,0 +1,251 @@
+{
+  "employees": [
+    {
+      "id": 1,
+      "name": "Trịnh Thái Quân",
+      "username": "quantt",
+      "password": "123456",
+      "department": "Phát triển",
+      "position": "Manager",
+      "level": "1",
+      "dateJoinCompany": "11/01/2022",
+      "projects": { "projectId": 1, "projectName": "TechSale", "dateJoinProject": "2022-01-05" },
+      "assessResults": [
+        { "year": 2023, "quarter": 1, "assessmentId": 1 },
+        { "year": 2023, "quarter": 2, "assessmentId": 2 }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Hà Cảnh Minh Quang",
+      "username": "quanghcm",
+      "password": "123456",
+      "department": "Tổng vụ",
+      "position": "Manager",
+      "level": "1",
+      "dateJoinCompany": "10/01/2023",
+      "projects": { "projectId": 1, "projectName": "TechSale", "dateJoinProject": "2022-01-10" },
+      "assessResults": [
+        { "year": 2023, "quarter": 1, "assessmentId": 3 }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Nguyễn Xuân Hải",
+      "username": "hainx",
+      "password": "123456",
+      "department": "Global",
+      "position": "Manager",
+      "level": "2",
+      "dateJoinCompany": "25/07/2022",
+      "projects": { "projectId": 2, "projectName": "TechSign", "dateJoinProject": "2022-02-05" },
+      "assessResults": [
+        { "year": 2023, "quarter": 1, "assessmentId": 4 }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Hồ Xuân Đại",
+      "username": "daihx",
+      "password": "123456",
+      "department": "Tổng vụ",
+      "position": "Manager",
+      "level": "1",
+      "dateJoinCompany": "12/8/2023",
+      "projects": [],
+      "assessResults": [
+        { "year": 2023, "quarter": 1, "assessmentId": 5 },
+        { "year": 2023, "quarter": 2, "assessmentId": 6 }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Đình Tùng",
+      "username": "tungdt",
+      "password": "123456",
+      "department": "Kinh doanh",
+      "position": "Manager",
+      "level": "1",
+      "dateJoinCompany": "01/01/2022",
+      "projects": { "projectId": 1, "projectName": "TechSale", "dateJoinProject": "2022-01-15" },
+      "assessResults": [
+        { "year": 2023, "quarter": 2, "assessmentId": 7 }
+      ]
+    }
+  ],
+  "assessments": [
+    {
+      "id": 1,
+      "year": 2023,
+      "quarter": 1,
+      "employeeId": 1,
+      "reviewBy": {
+        "managerId": 2,
+        "teamMemberIds": [4, 2]
+      },
+      "criteria": [
+        { "name": "Hiệu suất Công việc", "self": 4, "manager": 2, "team": 3, "total": 22.00 },
+        { "name": "Kỹ năng và Kiến thức", "self": 2, "manager": 3, "team": 2, "total": 10.00 },
+        { "name": "Tinh thần làm việc và Thái độ", "self": 4, "manager": 2, "team": 1, "total": 6.00 },
+        { "name": "Đóng góp và Sáng kiến", "self": 3, "manager": 2, "team": 3, "total": 6.67 },
+        { "name": "Quy định và Chính sách", "self": 5, "manager": 2, "team": 2, "total": 7.33 },
+        { "name": "Đóng góp Cá nhân và Kết quả", "self": 3, "manager": 3, "team": 3, "total": 20.00 }
+      ]
+    },
+    {
+      "id": 2,
+      "year": 2023,
+      "quarter": 2,
+      "employeeId": 1,
+      "reviewBy": {
+        "managerId": 2,
+        "teamMemberIds": [3, 4, 5]
+      },
+      "criteria": [
+        { "name": "Hiệu suất Công việc", "self": 3, "manager": 3, "team": 2, "total": 18.00 },
+        { "name": "Kỹ năng và Kiến thức", "self": 3, "manager": 2, "team": 3, "total": 11.00 },
+        { "name": "Tinh thần làm việc và Thái độ", "self": 4, "manager": 3, "team": 2, "total": 7.00 },
+        { "name": "Đóng góp và Sáng kiến", "self": 4, "manager": 3, "team": 2, "total": 8.00 },
+        { "name": "Quy định và Chính sách", "self": 4, "manager": 2, "team": 3, "total": 8.00 },
+        { "name": "Đóng góp Cá nhân và Kết quả", "self": 4, "manager": 3, "team": 3, "total": 22.00 }
+      ]
+    },
+    {
+      "id": 3,
+      "year": 2023,
+      "quarter": 1,
+      "employeeId": 2,
+      "reviewBy": {
+        "managerId": 1,
+        "teamMemberIds": [4, 1]
+      },
+      "criteria": [
+        { "name": "Hiệu suất Công việc", "self": 3, "manager": 3, "team": 2, "total": 18.00 },
+        { "name": "Kỹ năng và Kiến thức", "self": 3, "manager": 3, "team": 2, "total": 11.00 },
+        { "name": "Tinh thần làm việc và Thái độ", "self": 3, "manager": 3, "team": 3, "total": 8.00 },
+        { "name": "Đóng góp và Sáng kiến", "self": 3, "manager": 2, "team": 3, "total": 6.67 },
+        { "name": "Quy định và Chính sách", "self": 4, "manager": 3, "team": 2, "total": 8.00 },
+        { "name": "Đóng góp Cá nhân và Kết quả", "self": 4, "manager": 3, "team": 3, "total": 21.00 }
+      ]
+    },
+    {
+      "id": 4,
+      "year": 2023,
+      "quarter": 1,
+      "employeeId": 3,
+      "reviewBy": {
+        "managerId": 1,
+        "teamMemberIds": [2]
+      },
+      "criteria": [
+        { "name": "Hiệu suất Công việc", "self": 4, "manager": 2, "team": 3, "total": 22.00 },
+        { "name": "Kỹ năng và Kiến thức", "self": 2, "manager": 3, "team": 2, "total": 10.00 },
+        { "name": "Tinh thần làm việc và Thái độ", "self": 4, "manager": 2, "team": 1, "total": 6.00 },
+        { "name": "Đóng góp và Sáng kiến", "self": 3, "manager": 2, "team": 3, "total": 6.67 },
+        { "name": "Quy định và Chính sách", "self": 5, "manager": 2, "team": 2, "total": 7.33 },
+        { "name": "Đóng góp Cá nhân và Kết quả", "self": 3, "manager": 3, "team": 3, "total": 20.00 }
+      ]
+    },
+    {
+      "id": 5,
+      "year": 2023,
+      "quarter": 1,
+      "employeeId": 4,
+      "reviewBy": {
+        "managerId": 1,
+        "teamMemberIds": [1, 2, 3]
+      },
+      "criteria": [
+        { "name": "Hiệu suất Công việc", "self": 4, "manager": 2, "team": 3, "total": 22.00 },
+        { "name": "Kỹ năng và Kiến thức", "self": 2, "manager": 3, "team": 2, "total": 10.00 },
+        { "name": "Tinh thần làm việc và Thái độ", "self": 4, "manager": 2, "team": 1, "total": 6.00 },
+        { "name": "Đóng góp và Sáng kiến", "self": 3, "manager": 2, "team": 3, "total": 6.67 },
+        { "name": "Quy định và Chính sách", "self": 5, "manager": 2, "team": 2, "total": 7.33 },
+        { "name": "Đóng góp Cá nhân và Kết quả", "self": 3, "manager": 3, "team": 3, "total": 20.00 }
+      ]
+    },
+    {
+      "id": 6,
+      "year": 2023,
+      "quarter": 2,
+      "employeeId": 4,
+      "reviewBy": {
+        "managerId": 1,
+        "teamMemberIds": [1, 2, 3]
+      },
+      "criteria": [
+        { "name": "Hiệu suất Công việc", "self": 4, "manager": 2, "team": 3, "total": 22.00 },
+        { "name": "Kỹ năng và Kiến thức", "self": 2, "manager": 3, "team": 2, "total": 10.00 },
+        { "name": "Tinh thần làm việc và Thái độ", "self": 4, "manager": 2, "team": 1, "total": 6.00 },
+        { "name": "Đóng góp và Sáng kiến", "self": 3, "manager": 2, "team": 3, "total": 6.67 },
+        { "name": "Quy định và Chính sách", "self": 5, "manager": 2, "team": 2, "total": 7.33 },
+        { "name": "Đóng góp Cá nhân và Kết quả", "self": 3, "manager": 3, "team": 3, "total": 20.00 }
+      ]
+    },
+    {
+      "id": 7,
+      "year": 2023,
+      "quarter": 2,
+      "employeeId": 5,
+      "reviewBy": {
+        "managerId": 1,
+        "teamMemberIds": [1, 2, 3, 4]
+      },
+      "criteria": [
+        { "name": "Hiệu suất Công việc", "self": 4, "manager": 2, "team": 3, "total": 22.00 },
+        { "name": "Kỹ năng và Kiến thức", "self": 2, "manager": 3, "team": 2, "total": 10.00 },
+        { "name": "Tinh thần làm việc và Thái độ", "self": 4, "manager": 2, "team": 1, "total": 6.00 },
+        { "name": "Đóng góp và Sáng kiến", "self": 3, "manager": 2, "team": 3, "total": 6.67 },
+        { "name": "Quy định và Chính sách", "self": 5, "manager": 2, "team": 2, "total": 7.33 },
+        { "name": "Đóng góp Cá nhân và Kết quả", "self": 3, "manager": 3, "team": 3, "total": 20.00 }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "name": "TechSale",
+      "department": "Phát triển",
+      "startDate": "2022-01-01",
+      "endDate": "2022-02-28",
+      "members": [
+        { "name": "Trịnh Thái Quân", "department": "Phát triển", "position": "Middle", "avatar": "assets/avata.png", "level": 3, "dateJoinProject": "2022-01-05" },
+        { "name": "Nguyễn Văn A", "department": "Phát triển", "position": "Fresher", "avatar": "assets/avata.png", "level": 1, "dateJoinProject": "2022-01-10" },
+        { "name": "Trịnh Thái Quân", "department": "Phát triển", "position": "Manager", "avatar": "assets/avata.png", "level": 4, "dateJoinProject": "2022-01-01" },
+        { "name": "Nguyễn Văn A", "department": "Kinh Doanh", "position": "Manager", "avatar": "assets/avata.png", "level": 2, "dateJoinProject": "2022-01-15" }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "TechSign",
+      "department": "Phát Triển",
+      "startDate": "2022-02-02",
+      "endDate": "2022-03-31",
+      "members": [
+        { "name": "Lê Thị B", "department": "Phát Triển", "position": "Middle", "avatar": "assets/avata.png", "level": 3, "dateJoinProject": "2022-02-05" },
+        { "name": "Trần Văn C", "department": "Phát Triển", "position": "Tester", "avatar": "assets/avata.png", "level": 2, "dateJoinProject": "2022-02-10" },
+        { "name": "Trịnh Thái Quân", "department": "Kinh Doanh", "position": "Manager", "avatar": "assets/avata.png", "level": 4, "dateJoinProject": "2022-02-15" },
+        { "name": "Nguyễn Văn A", "department": "Kinh Doanh", "position": "Fresher", "avatar": "assets/avata.png", "level": 1, "dateJoinProject": "2022-02-20" },
+        { "name": "Trịnh Thái Quân", "department": "Kinh Doanh", "position": "Manager", "avatar": "assets/avata.png", "level": 4, "dateJoinProject": "2022-02-25" },
+        { "name": "Nguyễn Văn A", "department": "Kinh Doanh", "position": "Middle", "avatar": "assets/avata.png", "level": 2, "dateJoinProject": "2022-03-01" },
+        { "name": "Trịnh Thái Quân", "department": "Kinh Doanh", "position": "Manager", "avatar": "assets/avata.png", "level": 4, "dateJoinProject": "2022-03-10" },
+        { "name": "Nguyễn Văn A", "department": "Kinh Doanh", "position": "Junior", "avatar": "assets/avata.png", "level": 1, "dateJoinProject": "2022-03-15" },
+        { "name": "Trịnh Thái Quân", "department": "Kinh Doanh", "position": "Manager", "avatar": "assets/avata.png", "level": 4, "dateJoinProject": "2022-03-20" },
+        { "name": "Nguyễn Văn A", "department": "Kinh Doanh", "position": "Sales", "avatar": "assets/avata.png", "level": 2, "dateJoinProject": "2022-03-25" }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "TechAssess",
+      "department": "Kinh Doanh",
+      "startDate": "2022-02-02",
+      "endDate": "2022-03-31",
+      "members": [
+        { "name": "Trịnh Thái Quân", "department": "Kinh Doanh", "position": "Manager", "avatar": "assets/avata.png", "level": 4, "dateJoinProject": "2022-02-05" },
+        { "name": "Nguyễn Văn A", "department": "Kinh Doanh", "position": "Sales", "avatar": "assets/avata.png", "level": 2, "dateJoinProject": "2022-02-10" },
+        { "name": "Trịnh Thái Quân", "department": "Kinh Doanh", "position": "Manager", "avatar": "assets/avata.png", "level": 4, "dateJoinProject": "2022-02-15" },
+        { "name": "Nguyễn Văn A", "department": "Kinh Doanh", "position": "Sales", "avatar": "assets/avata.png", "level": 2, "dateJoinProject": "2022-02-20" }
+      ]
+    }
+  ]
+}
