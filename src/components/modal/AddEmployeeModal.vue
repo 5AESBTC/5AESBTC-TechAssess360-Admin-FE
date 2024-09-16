@@ -1,13 +1,13 @@
 <template>
 <div v-if="isVisible" class="modal-backdrop">
   <div class="modal fade show " tabindex="-1"  id="myModal1"  aria-hidden="false" style="display: block; ">
-    <div class="modal-dialog ">
-            <div class="modal-content" >
-            <div class="modal-header" style="background-color:rgba(25, 135, 84, 0.25); border-bottom: solid 0.05em gray;">
-              <h5 class="modal-title" >Sửa thông tin</h5>
+    <div class="modal-dialog " style="display: block;">
+          <div class="modal-content" style="background-color: rgb(183, 213, 236);">
+            <div class="modal-header" style=" border-bottom: solid 0.05em gray;">
+              <h5 class="modal-title" >Thêm mới nhân viên</h5>
               <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" style="background-color:rgba(25, 135, 84, 0.25); border-bottom: solid 0.05em gray;">
+            <div class="modal-body" style=" border-bottom: solid 0.05em gray;">
               <form ref="employeeForm" class="form" @submit.prevent="submitForm">
                 <div class="mb-3">
                   <label for="profilePicture" class="form-label">Ảnh đại diện</label>
@@ -48,7 +48,7 @@
                 </div>
                 <div class="row">
                   <div class="col-md-6 mb-3">
-                    <label for="level" class="form-label">Cấp bậc</label>
+                    <label for="level" class="form-label" >Cấp bậc</label>
                     <select class="form-select" v-model="employee.level" required>
                       <option value="Nhân viên">Nhân viên</option>
                       <option value="Quản lý">Quản lý</option>
@@ -62,7 +62,7 @@
                 </div>
               </form>
             </div>
-            <div class="modal-footer" style="background-color:rgba(25, 135, 84, 0.25);">
+            <div class="modal-footer">
               <button type="submit" class="btn btn-primary" @click="submitExternal">Thêm</button>
             </div>
           </div>
@@ -136,6 +136,9 @@ export default {
 }
 </script>
 <style scoped>
+label {
+  font-size:large;
+}
 .modal-backdrop {
   position: fixed;
   top: 0;

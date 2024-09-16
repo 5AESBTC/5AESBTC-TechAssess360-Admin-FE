@@ -1,13 +1,13 @@
 <template>
     <div v-if="isVisible1" class="modal-backdrop">
 <div class="modal fade show " tabindex="-1"  id="myModal"  aria-hidden="false" style="display: block; ">
-  <div class="modal-dialog ">
-<div class="modal-content" >
-  <div class="modal-header" style="background-color:rgba(25, 135, 84, 0.25); border-bottom: solid 0.05em gray;">
+  <div class="modal-dialog">
+<div class="modal-content" style=" background-color: rgb(183, 213, 236);">
+  <div class="modal-header" style=" border-bottom: solid 0.05em gray;">
     <h5 class="modal-title" >Sửa thông tin</h5>
     <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
   </div>
-  <div class="modal-body " style="background-color:rgba(25, 135, 84, 0.25); border-bottom: solid 0.05em gray;">
+  <div class="modal-body " style=" border-bottom: solid 0.05em gray;">
         <form  ref="employeeForm" class="form" @submit.prevent="updateEmployee">
           <div class="mb-3">
             <label for="employeeName" class="form-label">Họ tên</label>
@@ -53,7 +53,7 @@
           </div>
         </form>
       </div>
-      <div class="modal-footer" style="background-color:rgba(25, 135, 84, 0.25);" >
+      <div class="modal-footer"  >
         <button type="submit" class="btn btn-primary" @click="submitExternal">Sửa
         </button>
         </div>
@@ -108,6 +108,10 @@ export default {
 </script>
 
 <style scoped>
+label {
+  font-size:large;
+}
+
 .modal-backdrop {
   position: fixed;
   top: 0;
