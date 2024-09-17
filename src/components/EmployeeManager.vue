@@ -16,26 +16,32 @@
         <thead>
           <tr>
             <th scope="col">STT</th>
+            <th scope="col">Ảnh đại diện</th>
             <th scope="col">Tên</th>
-            <th scope="col">Bộ phận</th>
             <th scope="col">Chức vụ</th>
             <th scope="col">Cấp bậc</th>
+            <th scope="col">Dự án hiện tại</th>
             <th scope="col">Ngày vào công ty</th>
+            <th scope="col">Đánh giá</th>
             <th scope="col">Tác vụ</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="t in paginatedAdmin" :key="t.id">
-            <td>{{ t.id }}</td>
-            <td>{{ t.name }}</td>
-            <td>{{ t.department }}</td>
-            <td>{{ t.position }}</td>
-            <td>{{ t.level }}</td>
-            <td>{{ t.date }}</td>
+          <tr v-for="(employee, index) in paginatedEmployees" :key="employee.id">
+            <td>{{ index + 1 }}</td>
+            <td><img :src="employee.avatar" class="employee-img" /></td>
+            <td>{{ employee.name }}</td>
+            <td>{{ employee.position }}</td>
+            <td>{{ employee.level }}</td>
+            <td>{{ employee.project }}</td>
+            <td>{{ employee.dateJoinCompany }}</td>
+            <td class="">
+              <button v-if="employee.position == 'Manager'" class="btn btn-primary me-2">Đánh giá</button>
+              <button class="btn btn-info">Xem đánh giá</button>
+            </td>
             <td>
-              <a type='button' class="btn btn-warning me-3" @click="editEmployee(t)">Sửa</a>
-              <button class="btn btn-primary me-3">Đánh giá</button>
-              <button type="button" class="btn btn-danger" @click="confirmDelete(t.id)">Xoá</button>
+              <a type='button' class="btn btn-warning me-3" @click="editEmployee(employee)">Sửa</a>
+              <button type="button" class="btn btn-danger" @click="confirmDeleteEmployee(employee.id)">Xoá</button>
             </td>
           </tr>
         </tbody>
@@ -43,7 +49,7 @@
     </div>
 
     <!-- Pagination -->
-    <div class="pagination-wrapper">
+    <div class=" pagination-wrapper">
       <button @click="prevPage" :disabled="currentPage === 1" class="pagination-btn">
         <i class="fas fa-arrow-left"></i>
       </button>
@@ -54,9 +60,9 @@
     </div>
 
     <!-- Modal Component -->
-    <AddEmployeeModal :isVisible="isModalVisible" @close="closeModal" @add-employee="addEmployee" />
-    <EditEmployeeModal :is-visible1="isModalVisible1" :employeeData="selectedEmployee" @close="closeModal1"
-      @update="handleUpdate" />
+    <AddEmployeeModal :isVisible="isModalVisible" @close="closeModal" @employee-added="fetchEmployees" />
+    <EditEmployeeModal :is-visible1="isModalVisible1" :employeeData="selectedEmployee" @close="closeEmployeeEditModal"
+      @employee-edited="fetchEmployees" />
   </div>
 </template>
 
@@ -64,6 +70,8 @@
 import AddEmployeeModal from './modal/AddEmployeeModal.vue';
 import axios from 'axios';
 import EditEmployeeModal from './modal/EditEmployeeModal.vue';
+import Swal from 'sweetalert2';
+
 export default {
   components: {
     AddEmployeeModal,
@@ -71,69 +79,121 @@ export default {
   },
   data() {
     return {
+      apiUrl: process.env.VUE_APP_DB_URL,
       isModalVisible: false,
       isModalVisible1: false,
       selectedEmployee: null,
-      DataTest: [
-        { id: 1, name: 'Trịnh Thái Quân', username: 'adnka', password: 'akdakd', department: 'a', position: 'Manager', level: '1', date: '1/1/1' },
-        { id: 2, name: 'Quang', department: 'd', position: 'Manager', level: '1' },
-        { id: 3, name: 'Hải', department: 'c', position: 'Manager', level: '2' },
-        { id: 4, name: 'Đại', department: '2', position: 'Manager', level: '1' },
-        { id: 5, name: 'Tùng', department: '1', position: 'Manager', level: '1' },
-      ],
+      employees: [],
+      projects: [],
       currentPage: 1,
-      itemsPerPage: 4,
+      itemsPerPage: 10,
     };
+  },
+  mounted() {
+    this.fetchEmployees();
+    this.fetchProjects();
   },
   computed: {
     totalPages() {
-      return Math.ceil(this.DataTest.length / this.itemsPerPage);
+      return Math.ceil(this.employees.length / this.itemsPerPage);
     },
-    paginatedAdmin() {
+
+    paginatedEmployees() {
       const start = (this.currentPage - 1) * this.itemsPerPage;
       const end = start + this.itemsPerPage;
-      return this.DataTest.slice(start, end);
+      return this.employees.slice(start, end);
     }
   },
   methods: {
+    async fetchEmployees() {
+      try {
+        const response = await axios.get(this.apiUrl + '/employees');
+        this.employees = response.data;
+        console.log(this.employees);
+      } catch (error) {
+        console.error('Error fetching employees:', error);
+      }
+    },
+    async fetchProjects() {
+      try {
+        const response = await axios.get(this.apiUrl + '/projects');
+        this.projects = response.data;
+      } catch (error) {
+        console.error('Error fetching employees:', error);
+      }
+    },
+    async confirmDeleteEmployee(id) {
+
+      const result = await Swal.fire({
+        title: "Bạn có muốn xóa nhân viên này?",
+        icon: 'warning',
+        showCancelButton: true,
+      })
+      if (result.isConfirmed) {
+        try {
+          const employeeResponse = await axios.get(this.apiUrl + `/employees/${id}`);
+          const employee = employeeResponse.data;
+
+          if (!this.projects || this.projects.length === 0) {
+            await this.fetchProjects();
+          }
+
+          const project = this.projects.find(proj => proj.name === employee.project);
+
+          if (project) {
+            project.members = project.members.filter(emp => emp !== employee.username);
+            await axios.put(this.apiUrl + `/projects/${project.id}`, project);
+          } else {
+            console.warn(`Không tìm thấy dự án cho nhân viên: ${employee.name}`);
+          }
+
+          await axios.delete(this.apiUrl + `/employees/${id}`);
+
+          Swal.fire({
+            title: 'Đã xóa!',
+            text: 'Nhân viên đã được xóa thành công.',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false
+          });
+
+          this.fetchEmployees();
+        } catch (error) {
+          console.error('Lỗi khi xóa nhân viên:', error);
+          Swal.fire({
+            title: 'Lỗi!',
+            text: 'Đã xảy ra lỗi khi xóa nhân viên.',
+            icon: 'error'
+          });
+        }
+      }
+
+    },
+
     openModal() {
       this.isModalVisible = true;
     },
-    openModal1() {
+    showEmployeeEditModal() {
       this.isModalVisible1 = true;
     },
     closeModal() {
       this.isModalVisible = false;
     },
-    closeModal1() {
+    closeEmployeeEditModal() {
       this.isModalVisible1 = false;
     },
     editEmployee(employee) {
-      this.selectedEmployee = { ...employee }; // Đảm bảo tạo một bản sao của đối tượng nhân viên
-      this.openModal1();
+      this.selectedEmployee = { ...employee }
+      this.showEmployeeEditModal();
     },
     handleUpdate(updatedEmployee) {
       const index = this.DataTest.findIndex(emp => emp.id === updatedEmployee.id);
       if (index !== -1) {
         this.DataTest.splice(index, 1, updatedEmployee);
       }
-      this.closeModal1();
+      this.closeEmployeeEditModal();
     },
-    confirmDelete(id) {
-      const confirmed = window.confirm('Bạn có chắc chắn muốn xóa nhân viên này? ');
-      if (confirmed) {
-        this.deleteUser(id);
-      }
-    },
-    async deleteUser(id) {
-      try {
-        await axios.delete(`https://jsonplaceholder.typicode.com/posts/${id}`);
-        this.DataTest = this.DataTest.filter(emp => emp.id !== id);
-        console.log('Employee deleted successfully');
-      } catch (error) {
-        console.error('Error deleting employee:', error);
-      }
-    },
+
     prevPage() {
       if (this.currentPage > 1) {
         this.currentPage--;
@@ -247,5 +307,10 @@ export default {
 .pagination-btn:disabled {
   background-color: #aaa;
   cursor: not-allowed;
+}
+
+.employee-img {
+  width: 40px;
+  border-radius: 50%;
 }
 </style>

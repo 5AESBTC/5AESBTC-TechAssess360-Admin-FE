@@ -9,61 +9,29 @@
                 </div>
                 <div class="modal-body">
                     <!-- Form nhập tên dự án và chọn bộ phận -->
-                    <form>
+                    <form ref="projectForm" @submit.prevent="submitForm">
                         <div class="mb-3 d-flex">
                             <label for="project-name" class="col-form-label text-start w-50 ">Tên dự án:</label>
-                            <input type="text" class="form-control" id="project-name" v-model="newProject.name" />
+                            <input type="text" class="form-control" id="project-name" v-model="project.name" />
                         </div>
-                        <div class="mb-3 d-flex">
-                            <label for="project-department" class="col-form-label text-start w-50">Thuộc bộ
-                                phận:</label>
-                            <select class="form-select" id="project-department">
-                                <option value="">Phát triển</option>
-                                <option value="Kinh Doanh">Kinh Doanh</option>
-                                <option value="Phát Triển">Tổng vụ</option>
-                            </select>
-                        </div>
-                        <!-- <div class="mb-3" v-if="selectedDepartment">
-                <div class="d-flex gap-2">
-                  <span class="input-group-text" id="basic-addon1">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                  </span>
-                  <div class="position-relative" style="width: 100%;">
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="member-name"
-                      v-model="searchMember"
-                      placeholder="Tìm kiếm thành viên"
-                      @input="filterMembers"
-                    />
-                    <div v-if="filteredMembers.length" class="suggestions-box">
-                      <ul class="list-group mt-2">
-                        <li
-                          v-for="member in filteredMembers"
-                          :key="member.nameNV"
-                          class="list-group-item"
-                          @click="selectMember(member)"
-                        >
-                          {{ member.nameNV }}
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div> -->
                         <div class="mb-3 d-flex">
                             <label for="project-start-date" class="col-form-label text-start w-50">Ngày bắt đầu:</label>
-                            <input type="date" class="form-control" id="project-start-date"
-                                v-model="newProject.startDate" :min="minDate" />
+                            <input type="date" class="form-control" id="project-start-date" v-model="project.startDate"
+                                :min="minDate" />
+                        </div>
+                        <div class="mb-3 d-flex">
+                            <label for="project-start-date" class="col-form-label text-start w-50">Ngày kết
+                                thúc:</label>
+                            <input type="date" class="form-control" id="project-end-date" v-model="project.endDate"
+                                :min="minDate" />
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @click="$emit('close')">
+                    <button type="button" class="btn btn-secondary" @click="closeModal">
                         Đóng
                     </button>
-                    <button button type=" submit" class="btn btn-primary">
+                    <button type=" submit" class="btn btn-primary" @click="addProject">
                         Thêm dự án
                     </button>
                 </div>
@@ -72,24 +40,66 @@
     </div>
 </template>
 <script>
+import Swal from 'sweetalert2';
+import axios from 'axios';
+
 export default {
     name: 'AddProject',
     data() {
         return {
+            apiUrl: process.env.VUE_APP_DB_URL,
             isModalVisible: false,
-            newProject: {
+            project: {
                 name: "",
-                department: "",
                 startDate: "",
                 endDate: "",
-                details: [],
+                members: [],
             },
             minDate: "2023-01-01",
         };
     },
-    method: {
+    methods: {
         showModal() {
             this.isModalVisible = true;
+        },
+        closeModal() {
+            this.$emit('close');
+        },
+        async addProject() {
+            const form = this.$refs.projectForm;
+            if (form.reportValidity()) {
+                const newProject = JSON.parse(JSON.stringify(this.project));
+                try {
+                    await axios.post(this.apiUrl + '/projects', newProject);
+                    this.$emit('project-fetch');
+                    Swal.fire({
+                        title: 'Thêm dự án thành công!',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false,
+                    });
+                    this.resetForm();
+                    setTimeout(() => {
+                        this.closeModal();
+                    }, 1500);
+                } catch (error) {
+                    Swal.fire({
+                        title: 'Lỗi!',
+                        text: 'Có lỗi xảy ra khi thêm dự án.',
+                        icon: 'error',
+                        confirmButtonText: 'Đóng',
+                    });
+                }
+            }
+        },
+
+        resetForm() {
+            this.project = {
+                name: "",
+                startDate: "",
+                endDate: "",
+                members: [],
+            };
         },
     },
 }

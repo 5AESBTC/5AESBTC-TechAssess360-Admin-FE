@@ -1,39 +1,44 @@
 <template>
-    <!-- Project Details Modal -->
+    <!-- Project members Modal -->
     <div class="modal-overlay" @click.self="close">
         <div class="modal-container">
             <button class="close-btn" @click="close">
                 <i class="fas fa-times"></i>
             </button>
-            <h2 class="project-details-title">Chi tiết dự án {{ project.name }}</h2>
-            <div class="detail-header text-start">
+            <h2 class="project-members-title">Chi tiết nhân viên trong dự án {{ project.name }}</h2>
+            <div class="member-header text-start">
                 <button @click="showAddEmployeeIntoProjectModal" class="btn btn-success me-3">
                     Thêm nhân viên
                 </button>
-                <input type="text" v-model="detailSearchQuery" placeholder="Tìm kiếm nhân viên..."
-                    class="search-bar detail-search-bar" />
+                <input type="text" v-model="detailSearchQuery" placeholder="Tìm kiếm nhân viên hoặc chức vụ..."
+                    class="search-bar member-search-bar" />
             </div>
-            <!-- Detail Table -->
-            <div class="detail-table-container">
-                <table class="detail-table">
+            <!-- member Table -->
+            <div class="member-table-container">
+                <table class="member-table">
                     <thead>
                         <tr>
-                            <th>STT</th>
+                            <th class="small-col">STT</th>
                             <th>Avatar</th>
-                            <th @click="sortDetail('nameNV')">Tên NV</th>
-                            <th @click="sortDetail('department')">Bộ phận</th>
+                            <th @click="sortDetail('name')">Tên NV</th>
                             <th @click="sortDetail('position')">Chức vụ</th>
+                            <th class="small-col">Bậc</th>
                             <th>Tác vụ</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(detail, index) in filteredDetails" :key="index">
-                            <td>{{ index + 1 }}</td>
-                            <td><img :src="detail.avatar" alt="Avatar" class="avatar-img" /></td>
-                            <td>{{ detail.nameNV }}</td>
-                            <td>{{ detail.department }}</td>
-                            <td>{{ detail.position }}</td>
-                            <td><button type="button" class="btn btn-danger">Xoá</button></td>
+                        <tr v-for="(member, index) in filteredDetails" :key="index">
+                            <td class="small-col">{{ index + 1 }}</td>
+                            <td><img :src="member.avatar" alt="Avatar" class="avatar-img" /></td>
+                            <td>{{ member.name }}</td>
+                            <td>{{ member.position }}</td>
+                            <td class="small-col">{{ member.level }}</td>
+                            <td>
+                                <div class="d-flex">
+                                    <button type="button" class="btn btn-info me-3">Xem đánh giá</button>
+                                    <button type="button" class="btn btn-danger">Xoá</button>
+                                </div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -63,10 +68,9 @@ export default {
     computed: {
         filteredDetails() {
             const query = this.detailSearchQuery ? this.detailSearchQuery.toLowerCase() : "";
-            return this.project.details.filter(detail =>
-                detail.nameNV.toLowerCase().includes(query) ||
-                detail.department.toLowerCase().includes(query) ||
-                detail.position.toLowerCase().includes(query)
+            return this.project.members.filter(member =>
+                member.name.toLowerCase().includes(query) ||
+                member.position.toLowerCase().includes(query)
             );
         },
     },
@@ -115,7 +119,7 @@ export default {
                 department: "",
                 startDate: null,
                 endDate: null,
-                details: [],
+                members: [],
             };
             this.newProject.startDate = today; // Khôi phục giá trị ngày mặc định
             this.selectedDepartment = "";
@@ -170,6 +174,8 @@ export default {
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
     position: relative;
     overflow: auto;
+    height: 800px;
+    overflow-y: auto;
 }
 
 .close-btn {
@@ -204,13 +210,13 @@ export default {
     border-radius: 50%;
 }
 
-.detail-search-bar {
+.member-search-bar {
     margin-top: 50px;
     width: calc(100% - 50px);
     padding: 8px;
 }
 
-.detail-table {
+.member-table {
     border-collapse: collapse;
     width: 100%;
     max-width: 100%;
@@ -220,7 +226,7 @@ export default {
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
 }
 
-.detail-table thead {
+.member-table thead {
     position: sticky;
     position: -webkit-sticky;
     top: 0;
@@ -228,8 +234,8 @@ export default {
     background-color: #17a2b8;
 }
 
-.detail-table-container {
-    max-height: 400px;
+.member-table-container {
+    max-height: 600px;
     overflow-y: auto;
     width: 100%;
     margin: 0 auto;
@@ -240,7 +246,7 @@ export default {
 
 }
 
-.details-container {
+.members-container {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -250,41 +256,41 @@ export default {
     box-sizing: border-box;
 }
 
-.detail-header {
+.member-header {
     width: 100%;
     margin-bottom: 10px;
 }
 
-.detail-table-container::-webkit-scrollbar {
+.member-table-container::-webkit-scrollbar {
     display: none;
 }
 
-.detail-table td {
+.member-table td {
     font-size: 16px;
 }
 
-.detail-table tr {
+.member-table tr {
     display: table;
     width: 100%;
     table-layout: fixed;
 }
 
-.detail-table tr:hover {
+.member-table tr:hover {
     background-color: #e9ecef;
 }
 
-.detail-table tr:nth-child(even) {
+.member-table tr:nth-child(even) {
     background-color: #f1f3f5;
 }
 
-.detail-table th,
-.detail-table td {
-    padding: 20px;
+.member-table th,
+.member-table td {
+    padding: 10px;
     border-bottom: 1px solid #f0f0f0;
     text-align: center;
 }
 
-.detail-table th {
+.member-table th {
     background-color: #17a2b8;
     color: white;
     font-weight: 600;
@@ -293,15 +299,15 @@ export default {
     cursor: pointer;
 }
 
-.detail-table td {
+.member-table td {
     padding: 16px;
     border-bottom: 1px solid #dee2e6;
     font-size: 16px;
     height: 40px;
 }
 
-.detail-search-bar {
-    width: 250px;
+.member-search-bar {
+    width: 300px;
     border-radius: 25px;
     border: 1px solid #ddd;
     outline: none;
@@ -309,7 +315,12 @@ export default {
     transition: border-color 0.3s ease;
 }
 
-.detail-search-bar:focus {
+.member-search-bar:focus {
     border-color: #007bff;
+}
+
+.small-col {
+    width: 50px;
+    text-align: center;
 }
 </style>
