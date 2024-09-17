@@ -201,10 +201,12 @@ export default {
 }
 </script>
 <style scoped>
+label {
+  font-size:large;
+}
 .img-thumbnail {
   width: 30%;
 }
-
 .modal-backdrop {
   position: fixed;
   top: 0;

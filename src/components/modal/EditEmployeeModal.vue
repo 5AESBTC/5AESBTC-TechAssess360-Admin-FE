@@ -74,6 +74,13 @@
             <button type="submit" class="btn btn-primary" @click="submitForm()">Xác nhận
             </button>
           </div>
+        </form>
+      </div>
+      <div class="modal-footer"  >
+        <button type="submit" class="btn btn-primary" @click="submitExternal">Sửa
+        </button>
+        </div>
+        </div>
         </div>
       </div>
     </div>
@@ -155,6 +162,10 @@ export default {
 </script>
 
 <style scoped>
+label {
+  font-size:large;
+}
+
 .modal-backdrop {
   position: fixed;
   top: 0;
