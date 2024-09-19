@@ -1,11 +1,17 @@
 <template>
-  <div v-if="isVisible1" class="modal-backdrop">
-    <div class="modal fade show " tabindex="-1" id="myModal" aria-hidden="false" style="display: block; ">
-      <div class="modal-dialog ">
-        <div class="modal-content">
-          <div class="modal-header" style=" border-bottom: solid 0.05em gray;">
-            <h5 class="modal-title">Sửa thông tin</h5>
-            <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
+    <div v-if="isVisible1" class="modal-backdrop">
+<div class="modal fade show " tabindex="-1"  id="myModal"  aria-hidden="false" style="display: block; ">
+  <div class="modal-dialog">
+<div class="modal-content" style=" background-color: rgb(183, 213, 236);">
+  <div class="modal-header" style=" border-bottom: solid 0.05em gray;">
+    <h5 class="modal-title" >Sửa thông tin</h5>
+    <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body " style=" border-bottom: solid 0.05em gray;">
+        <form  ref="employeeForm" class="form" @submit.prevent="updateEmployee">
+          <div class="mb-3">
+            <label for="employeeName" class="form-label">Họ tên</label>
+            <input type="text" class="form-control" id="employeeName" v-model="employee.name" required>
           </div>
           <div class="modal-body " style=" border-bottom: solid 0.05em gray;">
             <form ref="employeeForm" class="form" @submit.prevent="updateEmployee">
@@ -70,10 +76,6 @@
               </div>
             </form>
           </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" @click="submitForm()">Xác nhận
-            </button>
-          </div>
         </form>
       </div>
       <div class="modal-footer"  >
@@ -84,7 +86,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
