@@ -213,6 +213,9 @@ export default {
 }
 </script>
 <style scoped>
+label {
+  font-size:large;
+}
 .img-thumbnail {
   width: 30%;
 }

@@ -94,6 +94,10 @@ export default {
             DataTest: [
                 { ID: '1', department: 'abc', state: 'Chưa sắp xếp thời gian đánh giá' },
                 { ID: '2', department: 'xyz', state: 'Chưa sắp xếp thời gian đánh giá' }
+            isVisible: false,
+            DataTest: [
+                {ID:'1', department: 'abc', state: 'Chưa sắp xếp thời gian đánh giá' },
+                {ID:'2', department: 'xyz', state: 'Chưa sắp xếp thời gian đánh giá' }
             ],
             selectedDepartment: '',
             formData: {
@@ -173,6 +177,35 @@ export default {
             if (this.savedFormData[this.selectedDepartment]) {
                 this.formData = { ...this.savedFormData[this.selectedDepartment] };
             }
+                resultDate: ''
+            },
+            savedFormData: {},
+            formSubmitted: false, 
+            formDisabled: false, 
+            formDisabledStatus: {}, 
+            isEditing: false,
+            confirmationTimes: {}, 
+            showError: false, 
+            showError2: false, 
+            hiddenButton: false,
+        };
+    },
+    methods: {
+        handleSelectChange(event) {
+            if (this.selectedDepartment) {
+                this.savedFormData[this.selectedDepartment] = { ...this.formData };
+            }
+            this.selectedDepartment = event.target.value;
+            this.resetFormData();
+            if (this.formDisabledStatus[this.selectedDepartment]) {
+                this.formDisabled = this.formDisabledStatus[this.selectedDepartment];
+                this.formSubmitted = true;
+                this.hiddenButton = true;
+            }
+            if (this.savedFormData[this.selectedDepartment]) {
+                this.formData = { ...this.savedFormData[this.selectedDepartment] };
+            }
+          
         },
         resetFormData() {
             this.formData = {
@@ -184,6 +217,9 @@ export default {
             this.formDisabled = false;
             this.hiddenButton = false;
             this.showError = false;
+        },
+        showModal() {
+            this.isVisible = true;
         },
         validateDates() {
             const { startDate, endDate, resultDate } = this.formData;
@@ -219,6 +255,9 @@ export default {
                 this.events.push(event); // Thêm mỗi sự kiện vào this.events
             });
         },
+                this.showModal();
+            }
+        },
         accept() {
             this.formSubmitted = true;
             this.formDisabled = true;
@@ -226,46 +265,48 @@ export default {
             this.confirmationTimes[this.selectedDepartment] = new Date().toLocaleString();
             this.formDisabledStatus[this.selectedDepartment] = true;
             this.savedFormData[this.selectedDepartment] = { ...this.formData };
+            // Cập nhật trạng thái của mục trong DataTest
             const departmentIndex = this.DataTest.findIndex(item => item.department === this.selectedDepartment);
             if (departmentIndex !== -1) {
                 this.DataTest[departmentIndex].state = 'Đã sắp xếp thời gian đánh giá';
             }
             this.isVisible = false;
         },
+        editForm() {
+            this.formDisabled = false;
+            this.hiddenButton = false;
+            this.formDisabledStatus[this.selectedDepartment] = false; // Cập nhật trạng thái disable của form
+        }
     }
 };
 </script>
 
 
 
-<style scoped>
-.close-button {
-    position: absolute;
-    top: 10px; /* Điều chỉnh khoảng cách từ trên xuống */
-    right: 10px; /* Điều chỉnh khoảng cách từ phải sang */
-    z-index: 1051; /* Đảm bảo nút nằm trên các phần tử khác */
-}
 
-.flex-container {
-    width: 50%;
-    height: fit-content;
-    color: white;
-    margin-top: 10px;
-    background-color: rgb(85, 75, 204);
-    border: solid grey 0.1em;
-    border-radius: 10px;
-    display: block;
-    justify-content: space-between;
-}
+<style scoped>
 .modal-backdrop {
-    display: flex;
-    justify-content: center;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1040; /* Đảm bảo modal-backdrop nằm phía trên các phần tử khác */
+}
+
+.form-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    height: fit-content;
+}
+.form-date{
+    width: 70%;
+    background-color: rgb(183, 213, 236);
+    border: solid grey 0.1em;
+    border-radius: 10px;
+    padding: 20px;
 }
 .text-danger {
     color: red;
@@ -340,4 +381,5 @@ export default {
   display: inline-block;
   margin-top: 5px;
 }
+
 </style>
