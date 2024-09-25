@@ -146,22 +146,19 @@ export default {
       if (form.reportValidity()) {
         const newEmployee = JSON.parse(JSON.stringify(this.employee));
         try {
-          await axios.post(this.apiUrl + '/employees', newEmployee)
+          const employeeResponse = await axios.post(this.apiUrl + '/employees', newEmployee)
+          const addedEmployee = employeeResponse.data;
 
           const project = this.projects.find(proj => proj.name === newEmployee.project);
           if (project) {
-            const employeeExists = project.members.some(member => member.id === newEmployee.id);
-
-            if (!employeeExists) {
-              project.members.push({
-                id: newEmployee.id,
-                name: newEmployee.name,
-                position: newEmployee.position,
-                level: newEmployee.level,
-                dateJoinCompany: newEmployee.dateJoinCompany,
-                avatar: newEmployee.avatar
-              });
-            }
+            project.members.push({
+              id: addedEmployee.id,
+              name: addedEmployee.name,
+              position: addedEmployee.position,
+              level: addedEmployee.level,
+              dateJoinCompany: addedEmployee.dateJoinCompany,
+              avatar: addedEmployee.avatar
+            });
 
             await axios.put(`${this.apiUrl}/projects/${project.id}`, project);
 
