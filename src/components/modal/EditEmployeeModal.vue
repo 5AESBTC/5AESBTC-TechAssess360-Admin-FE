@@ -20,25 +20,20 @@
                 <label for="employeeName" class="form-label">Họ tên</label>
                 <input type="text" class="form-control" id="employeeName" v-model="employee.name" required>
               </div>
-              <div class="mb-3">
-                <label for="username" class="form-label">Tên đăng nhập</label>
-                <input type="text" class="form-control" id="username" v-model="employee.username"
-                  autocomplete="username" required pattern="[a-zA-Z0-9]+" title="Tên đăng nhập chỉ chứa chữ cái và số">
-              </div>
-              <div class="mb-3">
-                <label for="password" class="form-label">Mật khẩu</label>
-                <input type="password" class="form-control" id="password" v-model="employee.password"
-                  autocomplete="current-password" required minlength="6">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="username" class="form-label">Tên đăng nhập</label>
+                  <input type="text" class="form-control" id="username" v-model="employee.username"
+                    autocomplete="username" required pattern="[a-zA-Z0-9]+"
+                    title="Tên đăng nhập chỉ chứa chữ cái và số">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="password" class="form-label">Mật khẩu</label>
+                  <input type="password" class="form-control" id="password" v-model="employee.password"
+                    autocomplete="current-password" required minlength="6">
+                </div>
               </div>
               <div class="row">
-                <div class="col-md-6 mb-3 ">
-                  <label for="department" class="form-label">Bộ phận</label>
-                  <select class="form-select" v-model="employee.department" required>
-                    <option value="Phát triển">Phát triển</option>
-                    <option value="Tổng vụ">Tổng vụ</option>
-                    <option value="Kinh doanh">Kinh doanh</option>
-                  </select>
-                </div>
                 <div class="col-md-6 mb-3">
                   <label for="employeePosition" class="form-label">Chức vụ</label>
                   <select class="form-select" v-model="employee.position" required>
@@ -51,8 +46,6 @@
                     <option value="Tester">Tester</option>
                   </select>
                 </div>
-              </div>
-              <div class="row">
                 <div class="col-md-6 mb-3">
                   <label for="level" class="form-label">Cấp bậc</label>
                   <select class="form-select" v-model="employee.level" required>
@@ -61,6 +54,16 @@
                     <option value="3">3</option>
                     <option value="4">4</option>
                     <option value="5">5</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="date" class="form-label">Thuộc dự án</label>
+                  <select class="form-select" v-model="employee.project" required>
+                    <option v-for="project in projects" :key="project.id" :value="project.name">
+                      {{ project.name }}
+                    </option>
                   </select>
                 </div>
                 <div class="col-md-6 mb-3">
@@ -74,10 +77,6 @@
             <button type="submit" class="btn btn-primary" @click="submitForm()">Xác nhận
             </button>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary" @click="submitExternal">Sửa
-          </button>
         </div>
       </div>
     </div>
@@ -102,7 +101,9 @@ export default {
   },
   data() {
     return {
-      employee: { ...this.employeeData }
+      employee: { ...this.employeeData },
+      apiUrl: process.env.VUE_APP_DB_URL,
+      projects: [],
     };
   },
   watch: {
@@ -113,9 +114,20 @@ export default {
       } else this.employee = {}
     }
   },
+  mounted() {
+    this.fetchProjects();
+  },
   methods: {
     closeModal() {
       this.$emit('close');
+    },
+    async fetchProjects() {
+      try {
+        const response = await axios.get(this.apiUrl + '/projects');
+        this.projects = response.data;
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      }
     },
     async submitForm() {
       const form = this.$refs.employeeForm;
