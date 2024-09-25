@@ -33,6 +33,10 @@
                     autocomplete="current-password" required minlength="6">
                 </div>
               </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="text" class="form-control" id="email" v-model="employee.email" autocomplete="email">
+              </div>
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label for="employeePosition" class="form-label">Chức vụ</label>
@@ -104,6 +108,7 @@ export default {
         name: '',
         username: '',
         password: '',
+        email: '',
         position: '',
         level: '',
         project: '',
@@ -193,6 +198,7 @@ export default {
       this.employee.name = ''
       this.employee.username = ''
       this.employee.password = ''
+      this.employee.email = ''
       this.employee.position = ''
       this.employee.level = ''
       this.employee.date = ''
@@ -202,11 +208,13 @@ export default {
 </script>
 <style scoped>
 label {
-  font-size:large;
+  font-size: large;
 }
+
 .img-thumbnail {
   width: 30%;
 }
+
 .modal-backdrop {
   position: fixed;
   top: 0;
