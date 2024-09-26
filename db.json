@@ -276,99 +276,100 @@
       "id": "1",
       "title": "Hiệu suất công việc",
       "point": 30,
-      "question": [
+      "total": 0,
+      "questions": [
         {
           "id": "1",
-          "title": "Bạn đã hoàn thành tất cả các mục tiêu công việc được giao trong thời gian qua?",
-          "point": 15,
+          "label": "Bạn đã hoàn thành tất cả các mục tiêu công việc được giao trong thời gian qua?",
+          "score": 15,
           "answer": [
             {
               "id": "1",
-              "title": "50%",
+              "label": "50%",
               "value": "1"
             },
             {
               "id": "2",
-              "title": "75%",
+              "label": "75%",
               "value": "2"
             },
             {
               "id": "3",
-              "title": "100%",
+              "label": "100%",
               "value": "3"
             },
             {
               "id": "4",
-              "title": "150%",
+              "label": "150%",
               "value": "4"
             },
             {
               "id": "5",
-              "title": "200%",
+              "label": "200%",
               "value": "5"
             }
           ]
         },
         {
           "id": "2",
-          "title": "Mức độ chính xác của công việc bạn thực hiện là?",
-          "point": 15,
+          "label": "Mức độ chính xác của công việc bạn thực hiện là?",
+          "score": 15,
           "answer": [
             {
               "id": "1",
-              "title": "50%",
+              "label": "50%",
               "value": "1"
             },
             {
               "id": "2",
-              "title": "75%",
+              "label": "75%",
               "value": "2"
             },
             {
               "id": "3",
-              "title": "100%",
+              "label": "100%",
               "value": "3"
             },
             {
               "id": "4",
-              "title": "150%",
+              "label": "150%",
               "value": "4"
             },
             {
               "id": "5",
-              "title": "200%",
+              "label": "200%",
               "value": "5"
             }
           ]
         },
         {
           "id": "3",
-          "title": "Bạn có thường xuyên hoàn thành công việc đúng hạn không?",
-          "point": 15,
+          "label": "Bạn có thường xuyên hoàn thành công việc đúng hạn không?",
+          "score": 15,
           "answer": [
             {
               "id": "1",
-              "title": "Hiếm khi",
+              "label": "Hiếm khi",
               "value": "1"
             },
             {
               "id": "2",
-              "title": "Thỉnh thoảng",
+              "label": "Thỉnh thoảng",
               "value": "2"
             },
             {
               "id": "3",
-              "title": "Đôi khi",
+              "label": "Đôi khi",
               "value": "3"
             },
             {
               "id": "4",
-              "title": "Thường xuyên",
+              "label": "Thường xuyên",
               "value": "4"
             },
             {
               "id": "5",
-              "title": "Luôn luôn",
+              "label": "Luôn luôn",
               "value": "5"
             }
           ]
@@ -379,99 +380,100 @@
       "id": "2",
       "title": "Kỹ năng và Kiến thức",
       "point": 15,
-      "question": [
+      "total": 0,
+      "questions": [
         {
           "id": "1",
-          "title": " Bạn đã nâng cao kỹ năng chuyên môn của mình trong năm qua như thế nào?",
-          "point": 5,
+          "label": " Bạn đã nâng cao kỹ năng chuyên môn của mình trong năm qua như thế nào?",
+          "score": 5,
           "answer": [
             {
               "id": "1",
-              "title": "Không cải thiệnz",
+              "label": "Không cải thiệnz",
               "value": "1"
             },
             {
               "id": "2",
-              "title": "Cải thiện ít",
+              "label": "Cải thiện ít",
               "value": "2"
             },
             {
               "id": "3",
-              "title": "Cải thiện vừa phải",
+              "label": "Cải thiện vừa phải",
               "value": "3"
             },
             {
               "id": "4",
-              "title": "Cải thiện đáng kể",
+              "label": "Cải thiện đáng kể",
               "value": "4"
             },
             {
               "id": "5",
-              "title": "Cải thiện vượt bậc",
+              "label": "Cải thiện vượt bậc",
               "value": "5"
             }
           ]
         },
         {
           "id": "2",
-          "title": "Bạn có cảm thấy mình áp dụng kiến thức mới vào công việc hiệu quả không? ",
-          "point": 5,
+          "label": "Bạn có cảm thấy mình áp dụng kiến thức mới vào công việc hiệu quả không? ",
+          "score": 5,
           "answer": [
             {
               "id": "1",
-              "title": "Hoàn toàn không",
+              "label": "Hoàn toàn không",
               "value": "1"
             },
             {
               "id": "2",
-              "title": "Ít hiệu quả",
+              "label": "Ít hiệu quả",
               "value": "2"
             },
             {
               "id": "3",
-              "title": "Hiệu quả trung bình",
+              "label": "Hiệu quả trung bình",
               "value": "3"
             },
             {
               "id": "4",
-              "title": "Khá hiệu quả",
+              "label": "Khá hiệu quả",
               "value": "4"
             },
             {
               "id": "5",
-              "title": "Rất hiệu quả",
+              "label": "Rất hiệu quả",
               "value": "5"
             }
           ]
         },
         {
           "id": "3",
-          "title": " Bạn cảm thấy cần cải thiện kỹ năng nào để nâng cao hiệu suất công việc?",
-          "point": 5,
+          "label": " Bạn cảm thấy cần cải thiện kỹ năng nào để nâng cao hiệu suất công việc?",
+          "score": 5,
           "answer": [
             {
               "id": "1",
-              "title": "Quản lý thời gian",
+              "label": "Quản lý thời gian",
               "value": "1"
             },
             {
               "id": "2",
-              "title": "Giao tiếp và hợp tác",
+              "label": "Giao tiếp và hợp tác",
               "value": "2"
             },
             {
               "id": "3",
-              "title": "Chuyên môn kỹ thuật",
+              "label": "Chuyên môn kỹ thuật",
               "value": "3"
             },
             {
               "id": "4",
-              "title": "Giải quyết vấn đề và ra quyết định",
+              "label": "Giải quyết vấn đề và ra quyết định",
               "value": "4"
             },
             {
               "id": "5",
-              "title": "Lãnh đạo và quản lý đội nhóm",
+              "label": "Lãnh đạo và quản lý đội nhóm",
               "value": "5"
             }
           ]
@@ -480,101 +482,102 @@
     },
     {
       "id": "3",
-      "title": " Tinh thần làm việc và Thái độ",
+      "title": "Tinh thần làm việc và Thái độ",
       "point": 10,
-      "question": [
+      "total": 0,
+      "questions": [
         {
           "id": "1",
-          "title": "Bạn có thường xuyên hỗ trợ đồng nghiệp trong công việc không?",
-          "point": 5,
+          "label": "Bạn có thường xuyên hỗ trợ đồng nghiệp trong công việc không?",
+          "score": 5,
           "answer": [
             {
               "id": "1",
-              "title": "Rất hiếm khi",
+              "label": "Rất hiếm khi",
               "value": "1"
             },
             {
               "id": "2",
-              "title": "Thỉnh thoảng",
+              "label": "Thỉnh thoảng",
               "value": "2"
             },
             {
               "id": "3",
-              "title": "Đôi khi",
+              "label": "Đôi khi",
               "value": "3"
             },
             {
               "id": "4",
-              "title": "Thường xuyên",
+              "label": "Thường xuyên",
               "value": "4"
             },
             {
               "id": "5",
-              "title": "Luôn luôn",
+              "label": "Luôn luôn",
               "value": "5"
             }
           ]
         },
         {
           "id": "2",
-          "title": "Thái độ làm việc của bạn trong công việc là?",
-          "point": 2.5,
+          "label": "Thái độ làm việc của bạn trong công việc là?",
+          "score": 2.5,
           "answer": [
             {
               "id": "1",
-              "title": "Thiếu động lực",
+              "label": "Thiếu động lực",
               "value": "1"
             },
             {
               "id": "2",
-              "title": "Hơi thụ động",
+              "label": "Hơi thụ động",
               "value": "2"
             },
             {
               "id": "3",
-              "title": "Cần cải thiện",
+              "label": "Cần cải thiện",
               "value": "3"
             },
             {
               "id": "4",
-              "title": "Tích cực",
+              "label": "Tích cực",
               "value": "4"
             },
             {
               "id": "5",
-              "title": "Rất chủ động",
+              "label": "Rất chủ động",
               "value": "5"
             }
           ]
         },
         {
           "id": "3",
-          "title": "Khi gặp tình huống khó khăn, bạn xử lý như thế nào?",
-          "point": 2.5,
+          "label": "Khi gặp tình huống khó khăn, bạn xử lý như thế nào?",
+          "score": 2.5,
           "answer": [
             {
               "id": "1",
-              "title": "Tìm kiếm sự trợ giúp từ đồng nghiệp hoặc cấp trên",
+              "label": "Tìm kiếm sự trợ giúp từ đồng nghiệp hoặc cấp trên",
               "value": "1"
             },
             {
               "id": "2",
-              "title": "Cố gắng tự giải quyết với sự hỗ trợ từ tài liệu hoặc hướng dẫn",
+              "label": "Cố gắng tự giải quyết với sự hỗ trợ từ tài liệu hoặc hướng dẫn",
               "value": "2"
             },
             {
               "id": "3",
-              "title": "Đánh giá tình huống và thử nghiệm các giải pháp khác nhau",
+              "label": "Đánh giá tình huống và thử nghiệm các giải pháp khác nhau",
               "value": "3"
             },
             {
               "id": "4",
-              "title": "Tìm ra giải pháp sáng tạo và chủ động áp dụng",
+              "label": "Tìm ra giải pháp sáng tạo và chủ động áp dụng",
               "value": "4"
             },
             {
               "id": "5",
-              "title": "Giải quyết tình huống một cách hiệu quả và tự tin",
+              "label": "Giải quyết tình huống một cách hiệu quả và tự tin",
               "value": "5"
             }
           ]
@@ -588,27 +591,27 @@
       "answer": [
         {
           "id": "1",
-          "title": "Hầu như không",
+          "label": "Hầu như không",
           "value": "1"
         },
         {
           "id": "2",
-          "title": "Có ít đóng góp",
+          "label": "Có ít đóng góp",
           "value": "2"
         },
         {
           "id": "3",
-          "title": "Đóng góp mức trung bình",
+          "label": "Đóng góp mức trung bình",
           "value": "3"
         },
         {
           "id": "4",
-          "title": "Có nhiều đóng góp",
+          "label": "Có nhiều đóng góp",
           "value": "4"
         },
         {
           "id": "5",
-          "title": "Có rất nhiều đóng góp",
+          "label": "Có rất nhiều đóng góp",
           "value": "5"
         }
       ]
@@ -620,27 +623,27 @@
       "answer": [
         {
           "id": "1",
-          "title": "Hầu như không tuân thủ",
+          "label": "Hầu như không tuân thủ",
           "value": "1"
         },
         {
           "id": "2",
-          "title": "Tuân thủ ít",
+          "label": "Tuân thủ ít",
           "value": "2"
         },
         {
           "id": "3",
-          "title": "Tuân thủ mức trung bình",
+          "label": "Tuân thủ mức trung bình",
           "value": "3"
         },
         {
           "id": "4",
-          "title": "Tuân thủ tốt",
+          "label": "Tuân thủ tốt",
           "value": "4"
         },
         {
           "id": "5",
-          "title": "Tuân thủ hoàn toàn",
+          "label": "Tuân thủ hoàn toàn",
           "value": "5"
         }
       ]
@@ -648,7 +651,19 @@
     {
       "id": "6",
       "title": "Đóng góp cá nhân và kết quả",
-      "point": 25
+      "point": 25,
+      "opinions": [
+        {
+          "id": 1,
+          "label": "Thành tích nổi bật của thành viên này mà bạn biết:",
+          "answer": ""
+        },
+        {
+          "id": 2,
+          "label": "Bạn cảm thấy rằng thành viên này có đóng góp đủ cho sự phát triển của công ty không?",
+          "answer": ""
+        }
+      ]
     }
   ]
 }
