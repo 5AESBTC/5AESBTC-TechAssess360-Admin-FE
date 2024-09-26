@@ -252,7 +252,7 @@ export default {
 }
 
 .employee-table th {
-  background-color: #000044;
+  background-color: #000066;
   color: white;
   font-weight: 600;
   font-size: 20px;

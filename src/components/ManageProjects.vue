@@ -377,7 +377,7 @@ export default {
 
 .project-table th {
   vertical-align: middle;
-  background-color: #000044;
+  background-color: #000066;
   color: white;
   font-weight: 600;
   font-size: 18px;

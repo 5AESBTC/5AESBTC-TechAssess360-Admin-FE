@@ -46,7 +46,7 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  background-color: #000044;
+  background-color: #000066;
   color: white;
 }
 
