@@ -313,7 +313,7 @@
         {
           "id": "2",
           "label": "Mức độ chính xác của công việc bạn thực hiện là?",
-          "score": 15,
+          "score": 10,
           "answer": [
             {
               "id": "1",
@@ -345,7 +345,7 @@
         {
           "id": "3",
           "label": "Bạn có thường xuyên hoàn thành công việc đúng hạn không?",
-          "score": 15,
+          "score": 5,
           "answer": [
             {
               "id": "1",
@@ -588,31 +588,39 @@
       "id": "4",
       "title": "Đóng góp và sáng kiến",
       "point": 10,
-      "answer": [
+      "total": 0,
+      "questions": [
         {
-          "id": "1",
-          "label": "Hầu như không",
-          "value": "1"
-        },
-        {
-          "id": "2",
-          "label": "Có ít đóng góp",
-          "value": "2"
-        },
-        {
-          "id": "3",
-          "label": "Đóng góp mức trung bình",
-          "value": "3"
-        },
-        {
-          "id": "4",
-          "label": "Có nhiều đóng góp",
-          "value": "4"
-        },
-        {
-          "id": "5",
-          "label": "Có rất nhiều đóng góp",
-          "value": "5"
+          "id": 1,
+          "label": "",
+          "score": "10",
+          "answer": [
+            {
+              "id": "1",
+              "label": "Hầu như không",
+              "value": "1"
+            },
+            {
+              "id": "2",
+              "label": "Có ít đóng góp",
+              "value": "2"
+            },
+            {
+              "id": "3",
+              "label": "Đóng góp mức trung bình",
+              "value": "3"
+            },
+            {
+              "id": "4",
+              "label": "Có nhiều đóng góp",
+              "value": "4"
+            },
+            {
+              "id": "5",
+              "label": "Có rất nhiều đóng góp",
+              "value": "5"
+            }
+          ]
         }
       ]
     },
@@ -620,31 +628,39 @@
       "id": "5",
       "title": "Quy định và Chính sách",
       "point": 10,
-      "answer": [
+      "total": 0,
+      "questions": [
         {
-          "id": "1",
-          "label": "Hầu như không tuân thủ",
-          "value": "1"
-        },
-        {
-          "id": "2",
-          "label": "Tuân thủ ít",
-          "value": "2"
-        },
-        {
-          "id": "3",
-          "label": "Tuân thủ mức trung bình",
-          "value": "3"
-        },
-        {
-          "id": "4",
-          "label": "Tuân thủ tốt",
-          "value": "4"
-        },
-        {
-          "id": "5",
-          "label": "Tuân thủ hoàn toàn",
-          "value": "5"
+          "id": 1,
+          "label": "",
+          "score": "10",
+          "answer": [
+            {
+              "id": "1",
+              "label": "Hầu như không tuân thủ",
+              "value": "1"
+            },
+            {
+              "id": "2",
+              "label": "Tuân thủ ít",
+              "value": "2"
+            },
+            {
+              "id": "3",
+              "label": "Tuân thủ mức trung bình",
+              "value": "3"
+            },
+            {
+              "id": "4",
+              "label": "Tuân thủ tốt",
+              "value": "4"
+            },
+            {
+              "id": "5",
+              "label": "Tuân thủ hoàn toàn",
+              "value": "5"
+            }
+          ]
         }
       ]
     },
