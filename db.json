@@ -280,7 +280,7 @@
       "questions": [
         {
           "id": "1",
-          "label": "Bạn đã hoàn thành tất cả các mục tiêu công việc được giao trong thời gian qua?",
+          "label": "Mức độ hoàn thành mục tiêu công việc được giao trong thời gian qua?",
           "score": 15,
           "answer": [
             {
@@ -312,7 +312,7 @@
         },
         {
           "id": "2",
-          "label": "Mức độ chính xác của công việc bạn thực hiện là?",
+          "label": "Mức độ chính xác của công việc?",
           "score": 10,
           "answer": [
             {
@@ -344,7 +344,7 @@
         },
         {
           "id": "3",
-          "label": "Bạn có thường xuyên hoàn thành công việc đúng hạn không?",
+          "label": "Mức độ thường xuyên hoàn thành công việc đúng hạn?",
           "score": 5,
           "answer": [
             {
@@ -384,7 +384,7 @@
       "questions": [
         {
           "id": "1",
-          "label": " Bạn đã nâng cao kỹ năng chuyên môn của mình trong năm qua như thế nào?",
+          "label": "Thành viên này đã nâng cao kỹ năng chuyên môn của mình trong quý vừa qua như thế nào?",
           "score": 10,
           "answer": [
             {
@@ -416,7 +416,7 @@
         },
         {
           "id": "2",
-          "label": "Bạn có cảm thấy mình áp dụng kiến thức mới vào công việc hiệu quả không? ",
+          "label": "Bạn có cảm thấy thành viên này áp dụng kiến thức mới vào công việc hiệu quả không? ",
           "score": 5,
           "answer": [
             {
@@ -448,7 +448,7 @@
         },
         {
           "id": "3",
-          "label": " Bạn cảm thấy cần cải thiện kỹ năng nào để nâng cao hiệu suất công việc?",
+          "label": "Bạn cảm thấy thành viên này cần cải thiện kỹ năng nào để nâng cao hiệu suất công việc?",
           "score": 5,
           "answer": [
             {
@@ -488,7 +488,7 @@
       "questions": [
         {
           "id": "1",
-          "label": "Bạn có thường xuyên hỗ trợ đồng nghiệp trong công việc không?",
+          "label": "Thành viên này có thường xuyên hỗ trợ đồng nghiệp trong công việc không?",
           "score": 10,
           "answer": [
             {
@@ -520,7 +520,7 @@
         },
         {
           "id": "2",
-          "label": "Thái độ làm việc của bạn trong công việc là?",
+          "label": "Thái độ làm việc của thành viên này trong công việc là?",
           "score": 5,
           "answer": [
             {
@@ -552,7 +552,7 @@
         },
         {
           "id": "3",
-          "label": "Khi gặp tình huống khó khăn, bạn xử lý như thế nào?",
+          "label": "Khi gặp tình huống khó khăn, thành viên này xử lý như thế nào?",
           "score": 5,
           "answer": [
             {
