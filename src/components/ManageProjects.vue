@@ -1,251 +1,268 @@
-<template>
-  <div style="border-bottom: solid gray;">
-    <h2 style="text-align: center">Quản lý danh sách dự án</h2>
-  </div>
-  <div class="container">
-    <div class="top-bar">
-      <button class="btn btn-success me-3" @click="showModalAddProject">
-        Thêm dự án
-      </button>
-      <!-- Search Bar -->
-      <input type="text" v-model="searchQuery" placeholder="Tìm kiếm tên dự án hoặc bộ phận..." class="search-bar" />
+  <template>
+    <div style="border-bottom: solid gray;">
+      <h2 style="text-align: center">Quản lý danh sách dự án</h2>
     </div>
+    <div class="container">
+      <div class="top-bar">
+        <button class="btn btn-success me-3" @click="showModalAddProject">
+          Thêm dự án
+        </button>
+        <!-- Search Bar -->
+        <input type="text" v-model="searchQuery" placeholder="Tìm kiếm tên dự án hoặc bộ phận..." class="search-bar" />
+      </div>
 
-    <!-- Table -->
-    <table class="table project-table table-hover table-bordered">
-      <thead>
-        <tr>
-          <th>STT</th>
-          <th @click="sort('name')">Dự án</th>
-          <th>Số lượng thành viên</th>
-          <th>Ngày bắt đầu</th>
-          <th>Ngày kết thúc</th>
-          <th>Tác vụ</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(project, index) in paginatedProjects" :key="project.id">
-          <td>{{ (currentPageProjects - 1) * pageSizeProjects + index + 1 }}</td>
-          <td class="project-name" @click="showProjectDetailsModal(project)">{{ project.name }}</td>
-          <td>{{ project.members.length }}</td>
-          <td>{{ project.startDate }}</td>
-          <td>{{ project.endDate }}</td>
-          <td>
-            <button type='button' class="btn btn-warning me-3">Cập nhật</button>
-            <button type="button" class="btn btn-danger" @click="deleteProject(project.id)">Xoá</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- Table -->
+      <table class="table project-table table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th @click="sort('name')">Dự án</th>
+            <th>Số lượng thành viên</th>
+            <th>Ngày bắt đầu</th>
+            <th>Ngày kết thúc</th>
+            <th>Tác vụ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(projects, index) in paginatedProjects" :key="projects.id">
+            <td>{{ (currentPageProjects - 1) * pageSizeProjects + index + 1 }}</td>
+            <td class="project-name" @click="showProjectDetailsModal(projects)">{{ projects.name }}</td>
+            <td>{{ projects.members.length }}</td>
+            <td>{{ projects.startDay }}</td>
+            <td>{{ projects.endDay }}</td>
+            <td>
+              <button type='button' class="btn btn-warning me-3" @click="showUpdateProjectModal(projects)">Cập nhật</button>
+              <button type="button" class="btn btn-danger" @click="deleteProject(projects.id)">Xoá</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-    <!-- Pagination -->
-    <div class="pagination">
-      <button @click="prevPage" :disabled="currentPageProjects === 1" class="pagination-btn">
-        <i class="fas fa-arrow-left"></i>
-      </button>
-      <span>Trang {{ currentPageProjects }} / {{ totalPages }}</span>
-      <button @click="nextPage" :disabled="currentPageProjects === totalPages" class="pagination-btn">
-        <i class="fas fa-arrow-right"></i>
-      </button>
+      <!-- Pagination -->
+      <div class="pagination">
+        <button @click="prevPage" :disabled="currentPageProjects === 1" class="pagination-btn">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <span>Trang {{ currentPageProjects }} / {{ totalPages }}</span>
+        <button @click="nextPage" :disabled="currentPageProjects === totalPages" class="pagination-btn">
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+
+      <!-- Add Project Modal -->
+      <AddProject v-if="isShowProjectAddModal" @close="closeModalAddproject" @project-fetch="fetchProjects" />
+      <!-- Project Detail Modal -->
+      <ProjectDetails v-if="isShowProjectDetailsModal" :project="selectedProject" @close="closeProjectDetailsModal" />
+      <UpdateProject v-if="isShowProjectUpdateModal" :project="selectedProject" @close="closeModalUpdateProject" @project-fetch="fetchProjects" />
     </div>
+  </template>
 
-    <!-- Add Project Modal -->
-    <AddProject v-if="isShowProjectAddModal" @close="closeModalAddproject" @project-fetch="fetchProjects" />
-    <!-- Project Detail Modal -->
-    <ProjectDetails v-if="isShowProjectDetailsModal" :project="selectedProject" @close="closeProjectDetailsModal" />
-  </div>
-</template>
+  <script>
+  import AddProject from './modal/AddProject.vue';
+  import UpdateProject from './modal/UpdateProject.vue';
+  import ProjectDetails from './modal/ProjectDetails.vue';
+  import axios from 'axios';
+  import Swal from 'sweetalert2';
 
-<script>
-import AddProject from './modal/AddProject.vue';
-import ProjectDetails from './modal/ProjectDetails.vue';
-import axios from 'axios';
-import Swal from 'sweetalert2';
+  export default {
 
-export default {
-
-  name: 'ProjectsManage',
-  components: {
-    AddProject,
-    ProjectDetails,
-  },
-  data() {
-    return {
-      apiUrl: process.env.VUE_APP_DB_URL,
-      isShowProjectAddModal: false,
-      isShowProjectDetailsModal: false,
-      searchQuery: "",
-      tableSearchQuery: "",
-      currentPageProjects: 1,
-      currentPageEmployees: 1,
-      currentPageDetails: 1,
-      pageSizeProjects: 10,
-      pageSizeEmployees: 10,
-      pageSizeDetails: 5,
-      sortField: "name",
-      sortDirection: 1,
-      sortDetailField: "nameNV",
-      sortDetailDirection: 1,
-      activeMenu: null,
-      activeProject: null,
-      activeDetail: null,
-      isModalVisible: false,
-      projects: [],
-      selectedDepartment: "",
-      selectedEmployees: [],
-      selectedProject: null,
-      selectedProjectDetails: [],
-      showAddEmployee: false,
-      previousSelectedProject: null
-    };
-  },
-  mounted() {
-    this.fetchProjects();
-  },
-  computed: {
-    filteredProjects() {
-      let filtered = this.projects.filter((project) => {
-        const lowerCaseQuery = this.searchQuery.toLowerCase();
-        return (
-          project.name.toLowerCase().includes(lowerCaseQuery)
-        );
-      });
-
-      filtered.sort((a, b) => {
-        return this.sortDirection * a[this.sortField].toLowerCase().localeCompare(b[this.sortField].toLowerCase());
-      });
-
-      return filtered;
+    name: 'ProjectsManage',
+    components: {
+      AddProject,
+      ProjectDetails,
+      UpdateProject,
     },
-    paginatedProjects() {
-      const start = (this.currentPageProjects - 1) * this.pageSizeProjects;
-      return this.filteredProjects.slice(start, start + this.pageSizeProjects);
+    data() {
+      return {
+        apiUrl: process.env.VUE_APP_DB_URL,
+        isShowProjectAddModal: false,
+        isShowProjectDetailsModal: false,
+        isShowProjectUpdateModal: false,
+        searchQuery: "",
+        tableSearchQuery: "",
+        currentPageProjects: 1,
+        currentPageEmployees: 1,
+        currentPageDetails: 1,
+        pageSizeProjects: 10,
+        pageSizeEmployees: 10,
+        pageSizeDetails: 5,
+        sortField: "name",
+        sortDirection: 1,
+        sortDetailField: "nameNV",
+        sortDetailDirection: 1,
+        activeMenu: null,
+        activeProject: null,
+        activeDetail: null,
+        isModalVisible: false,
+        projects: [],
+        selectedDepartment: "",
+        selectedEmployees: [],
+        selectedProject: null,
+        selectedProjectDetails: [],
+        showAddEmployee: false,
+        previousSelectedProject: null
+      };
     },
-    totalPages() {
-      return Math.ceil(this.filteredProjects.length / this.pageSizeProjects);
+    mounted() {
+      this.fetchProjects();
     },
+    computed: {
+      filteredProjects() {
+        let filtered = this.projects.filter((project) => {
+          const lowerCaseQuery = this.searchQuery.toLowerCase();
+          return (
+            project.name.toLowerCase().includes(lowerCaseQuery)
+          );
+        });
 
-  },
-  methods: {
-    async fetchProjects() {
-      try {
-        const response = await axios.get(this.apiUrl + '/projects');
-        this.projects = response.data;
-        console.log(this.projects);
-      } catch (error) {
-        console.error('Error fetching projetcs:', error);
-      }
+        filtered.sort((a, b) => {
+          return this.sortDirection * a[this.sortField].toLowerCase().localeCompare(b[this.sortField].toLowerCase());
+        });
+
+        return filtered;
+      },
+      paginatedProjects() {
+        const start = (this.currentPageProjects - 1) * this.pageSizeProjects;
+        return this.filteredProjects.slice(start, start + this.pageSizeProjects);
+      },
+      totalPages() {
+        return Math.ceil(this.filteredProjects.length / this.pageSizeProjects);
+      },
+
     },
-    async deleteProject(projectId) {
-      const result = await Swal.fire({
-        title: 'Bạn có chắc chắn muốn xóa dự án này?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Xóa',
-        cancelButtonText: 'Hủy',
-        reverseButtons: true,
-      });
-      if (result.isConfirmed) {
+    methods: {
+      async fetchProjects() {
         try {
-          await axios.delete(`${this.apiUrl}/projects/${projectId}`);
-          this.fetchProjects()
-          Swal.fire({
-            title: 'Đã xóa dự án!',
-            icon: 'success',
-            timer: 1500,
-            showConfirmButton: false,
-          });
-
+          const response = await axios.get(this.apiUrl + '/api/projects');
+          this.projects = response.data.data;
+          console.log(this.projects);
         } catch (error) {
-          Swal.fire({
-            title: 'Lỗi!',
-            text: 'Đã xảy ra lỗi khi xóa dự án.',
-            icon: 'error',
-            confirmButtonText: 'Đóng',
-          });
+          console.error('Error fetching projetcs:', error);
         }
-      }
-    },
+      },
+      async deleteProject(projectId) {
+        const result = await Swal.fire({
+          title: 'Bạn có chắc chắn muốn xóa dự án này?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Xóa',
+          cancelButtonText: 'Hủy',
+          reverseButtons: true,
+        });
+        if (result.isConfirmed) {
+          try {
+            await axios.delete(`${this.apiUrl}/api/projects/${projectId}`);
+            this.fetchProjects()
+            Swal.fire({
+              title: 'Đã xóa dự án!',
+              icon: 'success',
+              timer: 1500,
+              showConfirmButton: false,
+            });
+
+          } catch (error) {
+            Swal.fire({
+              title: 'Lỗi!',
+              text: 'Đã xảy ra lỗi khi xóa dự án.',
+              icon: 'error',
+              confirmButtonText: 'Đóng',
+            });
+          }
+        }
+      },
+
+
     
-    showModalAddProject() {
-      this.isShowProjectAddModal = true;
+  showUpdateProjectModal(project) {
+      this.selectedProject = project;
+      console.log('Selected project ID:', project.id);
+      this.isShowProjectUpdateModal = true;
     },
-    closeModalAddproject() {
-      this.isShowProjectAddModal = false;
+    closeModalUpdateProject() {
+      this.isShowProjectUpdateModal = false;
+      this.selectedProject = null;
     },
-    showProjectDetailsModal(project) {
-      this.selectedProject = project
-      this.isShowProjectDetailsModal = true;
-    },
-    closeProjectDetailsModal() {
-      this.isShowProjectDetailsModal = false;
-      this.selectedProject = null
-    },
-    addEmployeeToProject(employeeDetails) {
-      if (this.selectedProject) {
-        this.selectedProject.details.push(...employeeDetails);
-      }
-      this.closeAddEmployeeIntoProjectModal();
-    },
-    // Hàm lọc dự án theo department và thêm details vào project mới
-    addDetailsToNewProject(department) {
-      const filteredProjects = this.projects.filter(
-        (project) => project.department === department
-      );
-      const mergedDetails = filteredProjects.flatMap(
-        (project) => project.details
-      );
-      this.newProject.details = mergedDetails;
-    },
+  
+      showModalAddProject() {
+        this.isShowProjectAddModal = true;
+      },
+      closeModalAddproject() {
+        this.isShowProjectAddModal = false;
+      },
+      showProjectDetailsModal(project) {
+        this.selectedProject = project
+        this.isShowProjectDetailsModal = true;
+      },
+      closeProjectDetailsModal() {
+        this.isShowProjectDetailsModal = false;
+        this.selectedProject = null
+      },
+      
+      addEmployeeToProject(employeeDetails) {
+        if (this.selectedProject) {
+          this.selectedProject.details.push(...employeeDetails);
+        }
+        this.closeAddEmployeeIntoProjectModal();
+      },
+      // Hàm lọc dự án theo department và thêm details vào project mới
+      addDetailsToNewProject(department) {
+        const filteredProjects = this.projects.filter(
+          (project) => project.department === department
+        );
+        const mergedDetails = filteredProjects.flatMap(
+          (project) => project.details
+        );
+        this.newProject.details = mergedDetails;
+      },
 
 
-    sort(field) {
-      if (this.sortField === field) {
-        this.sortDirection *= -1;
-      } else {
-        this.sortField = field;
-        this.sortDirection = 1;
-      }
-    },
-    closeAddEmployeeModal() {
-      this.showAddEmployee = false;
-      if (this.previousSelectedProject) {
-        this.selectedProject = this.previousSelectedProject;
-        this.previousSelectedProject = null; // Clear the stored project
-      }
-    },
-    toggleMenu(type, item) {
-      if (type === 'project') {
-        if (this.activeProject === item) {
-          this.activeProject = null; // Close the menu if clicked again
+      sort(field) {
+        if (this.sortField === field) {
+          this.sortDirection *= -1;
         } else {
-          this.activeProject = item;
-          this.activeMenu = 'project';
-          this.activeDetail = null; // Close detail menu if open
+          this.sortField = field;
+          this.sortDirection = 1;
         }
-      } else if (type === 'detail') {
-        if (this.activeDetail === item) {
-          this.activeDetail = null; // Close the menu if clicked again
-        } else {
-          this.activeDetail = item;
-          this.activeMenu = 'detail';
-          this.activeProject = null; // Close project menu if open
+      },
+      closeAddEmployeeModal() {
+        this.showAddEmployee = false;
+        if (this.previousSelectedProject) {
+          this.selectedProject = this.previousSelectedProject;
+          this.previousSelectedProject = null; // Clear the stored project
         }
-      }
-    },
-    prevPage() {
-      if (this.currentPageProjects > 1) {
-        this.currentPageProjects -= 1;
-      }
-    },
-    nextPage() {
-      if (this.currentPageProjects < this.totalPages) {
-        this.currentPageProjects += 1;
-      }
-    },
-  }
-};
-</script>
+      },
+      toggleMenu(type, item) {
+        if (type === 'project') {
+          if (this.activeProject === item) {
+            this.activeProject = null; // Close the menu if clicked again
+          } else {
+            this.activeProject = item;
+            this.activeMenu = 'project';
+            this.activeDetail = null; // Close detail menu if open
+          }
+        } else if (type === 'detail') {
+          if (this.activeDetail === item) {
+            this.activeDetail = null; // Close the menu if clicked again
+          } else {
+            this.activeDetail = item;
+            this.activeMenu = 'detail';
+            this.activeProject = null; // Close project menu if open
+          }
+        }
+      },
+      prevPage() {
+        if (this.currentPageProjects > 1) {
+          this.currentPageProjects -= 1;
+        }
+      },
+      nextPage() {
+        if (this.currentPageProjects < this.totalPages) {
+          this.currentPageProjects += 1;
+        }
+      },
+    }
+  };
+  </script>
 
 
 <style scoped>
