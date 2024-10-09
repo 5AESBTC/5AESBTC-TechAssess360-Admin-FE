@@ -8,7 +8,7 @@
             <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
           </div>
           <div class="modal-body " style=" border-bottom: solid 0.05em gray;">
-            <form ref="employeeForm" class="form" @submit.prevent="updateEmployee">
+            <form ref="employeeForm" class="form" @submit.prevent="submitForm">
               <div class="mb-3">
                 <label for="avatar" class="form-label">Ảnh đại diện</label>
                 <input type="file" class="form-control" id="avatar" @change="previewImage" accept="image/*" />
@@ -33,22 +33,19 @@
                     autocomplete="current-password" required minlength="6">
                 </div>
               </div>
-              <div class="row">
+               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label for="employeePosition" class="form-label">Chức vụ</label>
-                  <select class="form-select" v-model="employee.position" required>
-                    <option value="Admin">Admin</option>
-                    <option value="Manager" selected>Manager</option>
-                    <option value="Senior">Senior</option>
-                    <option value="Middle">Middle</option>
-                    <option value="Junior">Junior</option>
-                    <option value="Fresher">Fresher</option>
-                    <option value="Tester">Tester</option>
-                  </select>
+                  <select class="form-select" v-model="employee.rank.position.name" >
+                  <option value="INTERN">Intern</option>
+                  <option value="FRESHER">Fresher</option>
+                  <option value="MIDDLE">Midle</option>
+                </select>
+
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="level" class="form-label">Cấp bậc</label>
-                  <select class="form-select" v-model="employee.level" required>
+                  <select class="form-select" v-model="employee.rank.level" required>
                     <option value="1" selected>1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -58,17 +55,26 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6 mb-3">
+                <!-- <div class="col-md-6 mb-3">
                   <label for="date" class="form-label">Thuộc dự án</label>
                   <select class="form-select" v-model="employee.project" required>
                     <option v-for="project in projects" :key="project.id" :value="project.name">
                       {{ project.name }}
                     </option>
                   </select>
+                </div> -->
+                <div class="col-md-6 mb-3">
+                  <label for="employeeGender" class="form-label">Gender</label>
+                  <select class="form-select" v-model="employee.gender" >
+                  <option value="MALE">Male</option>
+                  <option value="FEMALE">Female</option>
+                  <option value="ORTHER">Orther</option>
+                </select>
+
                 </div>
                 <div class="col-md-6 mb-3">
-                  <label for="date" class="form-label">Ngày tham gia</label>
-                  <input type="date" class="form-control" id="date" v-model="employee.dateJoinCompany" required>
+                  <label for="date" class="form-label">Ngày vào công ty</label>
+                  <input type="date" class="form-control" id="date" v-model="employee.dob" required>
                 </div>
               </div>
             </form>
@@ -103,48 +109,43 @@ export default {
     return {
       employee: { ...this.employeeData },
       apiUrl: process.env.VUE_APP_DB_URL,
-      projects: [],
     };
   },
   watch: {
-    employeeData() {
-      if (this.employeeData) {
-        this.employee = Object.assign({}, this.employeeData)
-        console.log(this.employee)
-      } else this.employee = {}
+    employeeData: {
+    immediate: true, // Đồng bộ dữ liệu ngay khi component được mount
+    handler(newValue) {
+      if (newValue) {
+        this.employee = { ...newValue };
+      }
     }
+  }
   },
-  mounted() {
-    this.fetchProjects();
-  },
+
   methods: {
     closeModal() {
       this.$emit('close');
     },
-    async fetchProjects() {
-      try {
-        const response = await axios.get(this.apiUrl + '/projects');
-        this.projects = response.data;
-      } catch (error) {
-        console.error('Error fetching projects:', error);
-      }
-    },
-    async submitForm() {
+       async submitForm() {
       const form = this.$refs.employeeForm;
       if (form.reportValidity()) {
         const updatedEmployee = JSON.parse(JSON.stringify(this.employee));
         try {
-          await axios.put(`http://localhost:5005/employees/${this.employee.id}`, updatedEmployee);
-          this.$emit('employee-edited');
-          Swal.fire({
-            title: 'Sửa thông tin thành công!',
-            icon: 'success',
-            timer: 1500,
-            showConfirmButton: false
-          });
-          setTimeout(() => {
-            this.closeModal();
-          }, 1500);
+          const response = await axios.put(this.apiUrl + `/api/users/${this.employee.id}`, updatedEmployee);
+          response.data;
+            this.$emit('employee-added');
+            Swal.fire({
+              title: 'Thêm nhân viên thành công!',
+              icon: 'success',
+              timer: 1500,
+              showConfirmButton: false
+            });
+
+            this.resetForm();
+            setTimeout(() => {
+              this.closeModal();
+            }, 1500);
+          
         } catch (error) {
           console.log(error);
           Swal.fire({

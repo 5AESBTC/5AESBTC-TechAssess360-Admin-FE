@@ -28,26 +28,26 @@
         </thead>
         <tbody>
           <tr v-for="(employee, index) in paginatedEmployees" :key="employee.id">
-            <td>{{ index + 1 }}</td>
-            <td><img :src="employee.avatar" class="employee-img" /></td>
-            <td>{{ employee.name }}</td>
-            <td>{{ employee.position }}</td>
-            <td>{{ employee.level }}</td>
-            <td>{{ employee.project }}</td>
-            <td>{{ employee.dateJoinCompany }}</td>
-            <td class="">
-              <button v-if="employee.position == 'Manager'" class="btn btn-primary me-2">Đánh giá</button>
-              <button class="btn btn-info">Xem đánh giá</button>
-            </td>
-            <td>
-              <a type='button' class="btn btn-warning me-3" @click="editEmployee(employee)">Sửa</a>
-              <button type="button" class="btn btn-danger" @click="confirmDeleteEmployee(employee.id)">Xoá</button>
-            </td>
-          </tr>
+  <td>{{ index + 1 }}</td>
+  <td><img :src="employee.avatar" class="employee-img" /></td>
+  <td>{{ employee.name }}</td>
+  <td>{{ employee.rank && employee.rank.position ? employee.rank.position.name : 'N/A' }}</td>
+  <td>{{ employee.rank ? employee.rank.level : 'N/A' }}</td>
+  <td>{{ employee.userProjects.length > 0 ? employee.userProjects[0].project.name : 'No Project' }}</td>
+  <td>{{ employee.dateJoinCompany }}</td>
+  <td class="">
+    <button v-if="employee.position == 'Manager'" class="btn btn-primary me-2">Đánh giá</button>
+    <button class="btn btn-info">Xem đánh giá</button>
+  </td>
+  <td>
+    <a type='button' class="btn btn-warning me-3" @click="editEmployee(employee)">Sửa</a>
+    <button type="button" class="btn btn-danger" @click="confirmDeleteEmployee(employee.id)">Xoá</button>
+  </td>
+</tr>
+
         </tbody>
       </table>
     </div>
-
     <!-- Pagination -->
     <div class=" pagination-wrapper">
       <button @click="prevPage" :disabled="currentPage === 1" class="pagination-btn">
@@ -79,7 +79,7 @@ export default {
   },
   data() {
     return {
-      apiUrl: process.env.VUE_APP_URL,
+      apiUrl: process.env.VUE_APP_DB_URL,
       isModalVisible: false,
       isModalVisible1: false,
       selectedEmployee: null,
@@ -91,7 +91,6 @@ export default {
   },
   mounted() {
     this.fetchEmployees();
-    this.fetchProjects();
   },
   computed: {
     totalPages() {
@@ -107,68 +106,42 @@ export default {
   methods: {
     async fetchEmployees() {
       try {
-        const response = await axios.get(this.apiUrl + '/employees');
-        this.employees = response.data;
+        const response = await axios.get(this.apiUrl + '/api/users');
+        this.employees = response.data.data.filter(employee => employee.deleted !== true);
         console.log(this.employees);
       } catch (error) {
         console.error('Error fetching employees:', error);
       }
     },
-    async fetchProjects() {
-      try {
-        const response = await axios.get(this.apiUrl + '/projects');
-        this.projects = response.data;
-      } catch (error) {
-        console.error('Error fetching employees:', error);
-      }
-    },
+  
     async confirmDeleteEmployee(id) {
-
-      const result = await Swal.fire({
-        title: "Bạn có muốn xóa nhân viên này?",
-        icon: 'warning',
-        showCancelButton: true,
-      })
-      if (result.isConfirmed) {
-        try {
-          const employeeResponse = await axios.get(this.apiUrl + `/employees/${id}`);
-          const employee = employeeResponse.data;
-
-          if (!this.projects || this.projects.length === 0) {
-            await this.fetchProjects();
-          }
-
-          const project = this.projects.find(proj => proj.name === employee.project);
-
-          if (project) {
-            project.members = project.members.filter(emp => emp !== employee.username);
-            await axios.put(this.apiUrl + `/projects/${project.id}`, project);
-          } else {
-            console.warn(`Không tìm thấy dự án cho nhân viên: ${employee.name}`);
-          }
-
-          await axios.delete(this.apiUrl + `/employees/${id}`);
-
-          Swal.fire({
-            title: 'Đã xóa!',
-            text: 'Nhân viên đã được xóa thành công.',
-            icon: 'success',
-            timer: 1500,
-            showConfirmButton: false
-          });
-
-          this.fetchEmployees();
-        } catch (error) {
-          console.error('Lỗi khi xóa nhân viên:', error);
-          Swal.fire({
-            title: 'Lỗi!',
-            text: 'Đã xảy ra lỗi khi xóa nhân viên.',
-            icon: 'error'
-          });
-        }
-      }
-
-    },
+  const result = await Swal.fire({
+    title: "Bạn có muốn xóa nhân viên này?",
+    icon: 'warning',
+    showCancelButton: true,
+  });
+  if (result.isConfirmed) {
+    try {
+      await axios.delete(this.apiUrl + `/api/users/${id}`);
+      Swal.fire({
+        title: 'Đã xóa!',
+        text: 'Nhân viên đã được xóa thành công.',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false
+      });
+      this.fetchEmployees();  // Cập nhật lại danh sách nhân viên
+    } catch (error) {
+      console.error('Lỗi khi xóa nhân viên:', error);
+      Swal.fire({
+        title: 'Lỗi!',
+        text: 'Đã xảy ra lỗi khi xóa nhân viên.',
+        icon: 'error'
+      });
+    }
+  }
+}
+,
 
     openModal() {
       this.isModalVisible = true;

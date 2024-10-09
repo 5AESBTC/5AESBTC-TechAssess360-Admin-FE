@@ -33,22 +33,25 @@
                     autocomplete="current-password" required minlength="6">
                 </div>
               </div>
-              <div class="mb-3">
+              <div class="row">
+              <div class="col-md-6 mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="text" class="form-control" id="email" v-model="employee.email" autocomplete="email">
+                <input type="text" class="form-control" id="email" v-model="employee.email" autocomplete="email" >
               </div>
+              <div class="col-md-6 mb-3">
+                <label for="email" class="form-label">PhoneNumber</label>
+                <input type="text" class="form-control" id="phoneNumber" v-model="employee.phoneNumber" autocomplete="email" >
+              </div>
+            </div>
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label for="employeePosition" class="form-label">Chức vụ</label>
-                  <select class="form-select" v-model="employee.position" required>
-                    <option value="Admin">Admin</option>
-                    <option value="Manager" selected>Manager</option>
-                    <option value="Senior">Senior</option>
-                    <option value="Middle">Middle</option>
-                    <option value="Junior">Junior</option>
-                    <option value="Fresher">Fresher</option>
-                    <option value="Tester">Tester</option>
-                  </select>
+                  <select class="form-select" v-model="employee.position" >
+                  <option value="INTERN">Intern</option>
+                  <option value="FRESHER">Fresher</option>
+                  <option value="MIDDLE">Midle</option>
+                </select>
+
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="level" class="form-label">Cấp bậc</label>
@@ -62,17 +65,26 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6 mb-3">
+                <!-- <div class="col-md-6 mb-3">
                   <label for="date" class="form-label">Thuộc dự án</label>
                   <select class="form-select" v-model="employee.project" required>
                     <option v-for="project in projects" :key="project.id" :value="project.name">
                       {{ project.name }}
                     </option>
                   </select>
+                </div> -->
+                <div class="col-md-6 mb-3">
+                  <label for="employeeGender" class="form-label">Gender</label>
+                  <select class="form-select" v-model="employee.gender" >
+                  <option value="MALE">Male</option>
+                  <option value="FEMALE">Female</option>
+                  <option value="ORTHER">Orther</option>
+                </select>
+
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="date" class="form-label">Ngày vào công ty</label>
-                  <input type="date" class="form-control" id="date" v-model="employee.dateJoinCompany" required>
+                  <input type="date" class="form-control" id="date" v-model="employee.dob" required>
                 </div>
               </div>
             </form>
@@ -104,20 +116,21 @@ export default {
       apiUrl: process.env.VUE_APP_DB_URL,
       projects: [],
       employee: {
-        avatar: '',
+   
         name: '',
         username: '',
         password: '',
         email: '',
         position: '',
         level: '',
-        project: '',
-        dateJoinCompany: '',
+        phoneNumber: '',
+        dob: '',
+        gender:''
       },
     };
   },
   mounted() {
-    this.fetchProjects();
+    // this.fetchProjects();
   },
   methods: {
     closeModal() {
@@ -133,35 +146,13 @@ export default {
         reader.readAsDataURL(file);
       }
     },
-    async fetchProjects() {
-      try {
-        const response = await axios.get(this.apiUrl + '/projects');
-        this.projects = response.data;
-      } catch (error) {
-        console.error('Error fetching projects:', error);
-      }
-    },
     async addEmployee() {
       const form = this.$refs.employeeForm;
       if (form.reportValidity()) {
         const newEmployee = JSON.parse(JSON.stringify(this.employee));
         try {
-          const employeeResponse = await axios.post(this.apiUrl + '/employees', newEmployee)
-          const addedEmployee = employeeResponse.data;
-
-          const project = this.projects.find(proj => proj.name === newEmployee.project);
-          if (project) {
-            project.members.push({
-              id: addedEmployee.id,
-              name: addedEmployee.name,
-              position: addedEmployee.position,
-              level: addedEmployee.level,
-              dateJoinCompany: addedEmployee.dateJoinCompany,
-              avatar: addedEmployee.avatar
-            });
-
-            await axios.put(`${this.apiUrl}/projects/${project.id}`, project);
-
+          const employeeResponse = await axios.post(this.apiUrl + '/api/auths/register', newEmployee)
+         employeeResponse.data;
             this.$emit('employee-added');
             Swal.fire({
               title: 'Thêm nhân viên thành công!',
@@ -174,7 +165,7 @@ export default {
             setTimeout(() => {
               this.closeModal();
             }, 1500);
-          }
+          
         } catch (error) {
           Swal.fire({
             title: 'Lỗi!',
@@ -196,9 +187,10 @@ export default {
       this.employee.username = ''
       this.employee.password = ''
       this.employee.email = ''
+      this.employee.phoneNumber = ''
       this.employee.position = ''
       this.employee.level = ''
-      this.employee.date = ''
+      this.employee.dob = ''
     }
   },
 }
