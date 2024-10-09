@@ -33,7 +33,7 @@
   <td>{{ employee.name }}</td>
   <td>{{ employee.rank && employee.rank.position ? employee.rank.position.name : 'N/A' }}</td>
   <td>{{ employee.rank ? employee.rank.level : 'N/A' }}</td>
-  <td>{{ employee.userProjects.length > 0 ? employee.userProjects[0].project.name : 'No Project' }}</td>
+  <td>{{ employee.userProjects?.length > 0 ? employee.userProjects[0].project.name : 'No Project' }}</td>
   <td>{{ employee.dateJoinCompany }}</td>
   <td class="">
     <button v-if="employee.position == 'Manager'" class="btn btn-primary me-2">Đánh giá</button>

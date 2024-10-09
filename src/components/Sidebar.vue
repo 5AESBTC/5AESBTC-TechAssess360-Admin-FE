@@ -14,7 +14,7 @@
             <i class="bi bi-gear"></i> Quản lý dự án
           </router-link>
         </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <router-link to="/assess-date-manage" class="nav-link" active-class="active">
             <i class="bi bi-people"></i> Quản lý ngày đánh giá
           </router-link>
@@ -23,7 +23,7 @@
           <router-link to="/criterias-manage" class="nav-link" active-class="active">
             <i class="bi bi-people"></i> Quản lý tiêu chí
           </router-link>
-        </li>
+        </li> -->
         <li class="nav-item">
           <router-link to="/logout" class="nav-link" active-class="active">
             <i class="bi bi-box-arrow-right"></i> Đăng xuất
