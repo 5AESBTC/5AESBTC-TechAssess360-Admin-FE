@@ -27,7 +27,7 @@
           <tr v-for="(projects, index) in paginatedProjects" :key="projects.id">
             <td>{{ (currentPageProjects - 1) * pageSizeProjects + index + 1 }}</td>
             <td class="project-name" @click="showProjectDetailsModal(projects)">{{ projects.name }}</td>
-            <td>{{ projects.members.length }}</td>
+            <td>{{ projects.userProjects.length }}</td>
             <td>{{ projects.startDay }}</td>
             <td>{{ projects.endDay }}</td>
             <td>
