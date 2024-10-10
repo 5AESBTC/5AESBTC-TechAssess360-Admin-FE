@@ -16,29 +16,29 @@
         <thead>
           <tr>
             <th scope="col">STT</th>
-            <th scope="col">Ảnh đại diện</th>
+            <!-- <th scope="col">Ảnh đại diện</th> -->
             <th scope="col">Tên</th>
-            <th scope="col">Chức vụ</th>
+            <th scope="col">Vị trí</th>
             <th scope="col">Cấp bậc</th>
             <th scope="col">Dự án hiện tại</th>
-            <th scope="col">Ngày vào công ty</th>
-            <th scope="col">Đánh giá</th>
+            <!-- <th scope="col">Ngày vào công ty</th> -->
+            <!-- <th scope="col">Đánh giá</th> -->
             <th scope="col">Tác vụ</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(employee, index) in paginatedEmployees" :key="employee.id">
   <td>{{ index + 1 }}</td>
-  <td><img :src="employee.avatar" class="employee-img" /></td>
+  <!-- <td><img :src="employee.avatar" class="employee-img" /></td> -->
   <td>{{ employee.name }}</td>
   <td>{{ employee.rank && employee.rank.position ? employee.rank.position.name : 'N/A' }}</td>
   <td>{{ employee.rank ? employee.rank.level : 'N/A' }}</td>
   <td>{{ employee.userProjects?.length > 0 ? employee.userProjects[0].project.name : 'No Project' }}</td>
-  <td>{{ employee.dateJoinCompany }}</td>
-  <td class="">
+  <!-- <td>{{ employee.dateJoinCompany }}</td> -->
+  <!-- <td class="">
     <button v-if="employee.position == 'Manager'" class="btn btn-primary me-2">Đánh giá</button>
     <button class="btn btn-info">Xem đánh giá</button>
-  </td>
+  </td> -->
   <td>
     <a type='button' class="btn btn-warning me-3" @click="editEmployee(employee)">Sửa</a>
     <button type="button" class="btn btn-danger" @click="confirmDeleteEmployee(employee.id)">Xoá</button>
