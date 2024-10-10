@@ -245,6 +245,7 @@ export default {
           });
         } finally {
           // Đảm bảo isLoading sẽ được đặt lại thành false
+          window.location.reload();
           this.isLoading = false;
         }
       }

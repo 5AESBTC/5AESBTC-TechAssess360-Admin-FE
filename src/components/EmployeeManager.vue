@@ -82,7 +82,7 @@
                     :key="project.id"
                     class="dropdown-item"
                   >
-                    {{ project.project.name }}
+                    {{ project.name }}
                   </li>
                 </ul>
               </div>
@@ -154,6 +154,7 @@ import AddEmployeeModal from "./modal/AddEmployeeModal.vue";
 import EditEmployeeModal from "./modal/EditEmployeeModal.vue";
 import Swal from "sweetalert2";
 import UserService from "@/services/UserService";
+import ProjectService from "@/services/ProjectService";
 
 export default {
   components: {
@@ -200,6 +201,26 @@ export default {
             (employee) => employee.deleted !== true
           );
         }
+        // Tạo một danh sách để lưu trữ các dự án
+        const fetchProjectPromises = this.employees.map(async (employee) => {
+          const projectPromises = employee.userProjects.map(async (record) => {
+            const res = await ProjectService.fetchProjectById(record.projectId);
+            if (res.code === 1010) {
+              // Thay vì push vào userProjects, nên thay thế hoặc thêm vào một danh sách riêng
+              return res.data; // Trả về dữ liệu dự án
+            }
+          });
+
+          // Chờ tất cả các dự án được fetch xong
+          const projects = await Promise.all(projectPromises);
+          // Lọc ra các dự án hợp lệ và thêm vào userProjects
+          employee.userProjects = projects.filter(
+            (project) => project !== undefined
+          );
+        });
+
+        // Chờ tất cả các nhân viên được xử lý
+        await Promise.all(fetchProjectPromises);
         console.log(this.employees);
       } catch (error) {
         console.error("Error fetching employees:", error);
