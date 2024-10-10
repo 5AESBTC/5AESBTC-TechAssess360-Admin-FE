@@ -1,14 +1,12 @@
 <template>
-    <!-- Add Employee Modal -->
     <div class="modal-overlay" @click.self="close">
         <div class="modal-container">
             <button class="close-btn" @click="close">
                 <i class="fas fa-times"></i>
             </button>
-            <h2 class="modal-title">Thêm nhân viên vào dự án ...</h2>
+            <h2 class="modal-title">Thêm nhân viên vào dự án {{  project.name  }}</h2>
             <div class="search-container">
-                <input type="text" v-model="tableSearchQuery"
-                    placeholder="Tìm kiếm tên nhân viên hoặc bộ phận hoặc chức vụ" class="search-bar" />
+                <input type="text" v-model="tableSearchQuery" placeholder="Tìm kiếm tên nhân viên hoặc bộ phận hoặc chức vụ" class="search-bar" />
             </div>
             <div class="table-container">
                 <table class="employee-table">
@@ -30,8 +28,8 @@
                             </td>
                             <td><img :src="item.avatar" class="employee-img" /></td>
                             <td>{{ item.name }}</td>
-                            <td>{{ item.position }}</td>
-                            <td>{{ item.level }}</td>
+                            <td>{{ item.rank && item.rank.position ? item.rank.position.name : 'N/A' }}</td>
+                            <td>{{ item.rank ? item.rank.level : 'N/A' }}</td>
                             <td>{{ item.dateJoinCompany }}</td>
                         </tr>
                     </tbody>
@@ -49,7 +47,6 @@
             <div class="buttons">
                 <button class="btn btn-success" @click="addEmployees">Xác nhận</button>
             </div>
-
         </div>
     </div>
 </template>
@@ -74,14 +71,14 @@ export default {
         return {
             apiUrl: process.env.VUE_APP_DB_URL,
             tableSearchQuery: "",
-            selectedEmployees: [],
+            selectedEmployees: [], // Store selected employee indices
             currentPage: 1,
             pageSize1: 10,
             employees: [],
         };
     },
     mounted() {
-        this.fetchEmployees()
+        this.fetchEmployees();
     },
     computed: {
         filteredEmployees() {
@@ -103,41 +100,40 @@ export default {
     methods: {
         async fetchEmployees() {
             try {
-                const response = await axios.get(this.apiUrl + '/employees');
-                this.employees = response.data;
-                console.log(this.employees);
+                const response = await axios.get(this.apiUrl + '/api/users');
+                this.employees = response.data.data.filter(employee => employee.deleted !== true);
             } catch (error) {
                 console.error('Error fetching employees:', error);
             }
         },
-        add() {
+        async addEmployees() {
+    const employeeIds = this.selectedEmployees.map(index => this.employees[index].id);
+
+    console.log('Selected Employee IDs:', employeeIds);
+
+    const requestData = {
+        employeeIds: employeeIds
+    };
+
+    console.log('Request Data:', requestData);
+
+    try {
+        const response = await axios.post(`${this.apiUrl}/api/projects/${this.project.id}/employees`, requestData);
+        
+        console.log('API Response:', response.data);
+        if (response.data.code === 201) {
             const selectedEmployeeDetails = this.selectedEmployees.map(index => this.employees[index]);
-            if (this.previousSelectedProject) {
-                selectedEmployeeDetails.forEach(employee => {
-                    this.previousSelectedProject.details.push({
-                        nameNV: employee.name,
-                        department: employee.department,
-                        position: employee.role,
-                        avatar: "path/to/default-avatar.jpg",
-                    });
-                });
-            }
-            this.closeAddEmployeeModal();
-        },
-        removeDetail(detail) {
-            const index = this.selectedProject.details.indexOf(detail);
-            if (index !== -1) {
-                this.selectedProject.details.splice(index, 1);
-            }
-        },
-        close() {
-            this.$emit('close');
-        },
-        addEmployees() {
-            const selectedEmployeeDetails = this.selectedEmployees.map(index => this.paginatedEmployees[index]);
             this.$emit('add', selectedEmployeeDetails);
+            this.resetForm();
+            location.reload();
             this.close();
-        },
+        } else {
+            console.error('Failed to add employees to project:', response.data.message);
+        }
+    } catch (error) {
+        console.error('Error adding employees to project:', error.response ? error.response.data : error.message);
+    }
+},
         toggleEmployee(index) {
             if (this.selectedEmployees.includes(index)) {
                 this.selectedEmployees = this.selectedEmployees.filter(i => i !== index);
@@ -155,9 +151,21 @@ export default {
                 this.currentPage += 1;
             }
         },
+        close() {
+            this.$emit('close');
+            this.resetForm();
+        },
+        resetForm() {
+      this.employee.avatar = ''
+      this.employee.name = ''
+      this.employee.position = ''
+      this.employee.level = ''
+
+    }
     }
 }
 </script>
+
 
 <style scoped>
 .modal-overlay {

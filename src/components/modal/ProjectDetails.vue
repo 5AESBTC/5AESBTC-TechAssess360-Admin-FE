@@ -140,9 +140,11 @@ export default {
         },
         closeAddEmployeeIntoProjectModal() {
             this.isShowAddEmployeeIntoProjectModal = false;
+            location.reload();
         },
         addEmployee() {
             this.closeAddEmployeeIntoProjectModal();
+            location.reload();
         }
     }
 }
