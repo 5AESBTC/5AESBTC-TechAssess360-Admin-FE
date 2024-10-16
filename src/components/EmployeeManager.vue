@@ -9,12 +9,8 @@
           Thêm nhân viên
         </button>
         <!-- Search Bar -->
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Tìm kiếm tên nhân viên hoặc bộ phận..."
-          class="search-bar"
-        />
+        <input type="text" v-model="searchQuery" placeholder="Tìm kiếm tên nhân viên hoặc bộ phận..."
+          class="search-bar" />
       </div>
     </nav>
     <div class="table-responsive-md mt-2">
@@ -33,18 +29,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="(employee, index) in paginatedEmployees"
-            :key="employee.id"
-          >
+          <tr v-for="(employee, index) in paginatedEmployees" :key="employee.id">
             <td>{{ index + 1 }}</td>
             <td>
-              <img
-                :src="
-                  employee.fileInfo ? employee.fileInfo.fileUrl : defaultImg
-                "
-                class="employee-img"
-              />
+              <img :src="employee.fileInfo ? employee.fileInfo.fileUrl : defaultImg
+                " class="employee-img" />
             </td>
             <td>{{ employee.name }}</td>
             <td>
@@ -57,31 +46,13 @@
             <td>{{ employee.rank ? employee.rank.level : "N/A" }}</td>
             <td>
               <!-- Kiểm tra nếu có project -->
-              <div
-                class="dropdown"
-                v-if="employee.userProjects.length > 0"
-                @mouseenter="showProjectList = true"
-                @mouseleave="showProjectList = false"
-              >
-                <a
-                  class="dropdown-toggle"
-                  href="#"
-                  role="button"
-                  id="dropdownMenuLink"
-                  aria-expanded="false"
-                >
+              <div class="dropdown" v-if="employee.userProjects?.length > 0" @mouseenter="showProjectList = true"
+                @mouseleave="showProjectList = false">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" aria-expanded="false">
                   {{ employee.userProjects.length }} dự án
                 </a>
-                <ul
-                  class="dropdown-menu dropdown-menu-dark"
-                  aria-labelledby="dropdownMenuLink"
-                  v-if="showProjectList"
-                >
-                  <li
-                    v-for="project in employee.userProjects"
-                    :key="project.id"
-                    class="dropdown-item"
-                  >
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuLink" v-if="showProjectList">
+                  <li v-for="project in employee.userProjects" :key="project.id" class="dropdown-item">
                     {{ project.name }}
                   </li>
                 </ul>
@@ -97,17 +68,8 @@
     <button class="btn btn-info">Xem đánh giá</button>
   </td> -->
             <td>
-              <a
-                type="button"
-                class="btn btn-warning me-3"
-                @click="editEmployee(employee)"
-                >Sửa</a
-              >
-              <button
-                type="button"
-                class="btn btn-danger"
-                @click="confirmDeleteEmployee(employee.id)"
-              >
+              <a type="button" class="btn btn-warning me-3" @click="editEmployee(employee)">Sửa</a>
+              <button type="button" class="btn btn-danger" @click="confirmDeleteEmployee(employee.id)">
                 Xoá
               </button>
             </td>
@@ -117,35 +79,19 @@
     </div>
     <!-- Pagination -->
     <div class="pagination-wrapper">
-      <button
-        @click="prevPage"
-        :disabled="currentPage === 1"
-        class="pagination-btn"
-      >
+      <button @click="prevPage" :disabled="currentPage === 1" class="pagination-btn">
         <i class="fas fa-arrow-left"></i>
       </button>
       <span>Trang {{ currentPage }} / {{ totalPages }}</span>
-      <button
-        @click="nextPage"
-        :disabled="currentPage === totalPages"
-        class="pagination-btn"
-      >
+      <button @click="nextPage" :disabled="currentPage === totalPages" class="pagination-btn">
         <i class="fas fa-arrow-right"></i>
       </button>
     </div>
 
     <!-- Modal Component -->
-    <AddEmployeeModal
-      :isVisible="isModalVisible"
-      @close="closeModal"
-      @employee-added="fetchEmployees"
-    />
-    <EditEmployeeModal
-      :is-visible1="isModalVisible1"
-      :employeeData="selectedEmployee"
-      @close="closeEmployeeEditModal"
-      @employee-edited="fetchEmployees"
-    />
+    <AddEmployeeModal :isVisible="isModalVisible" @close="closeModal" @employee-added="fetchEmployees" />
+    <EditEmployeeModal :is-visible1="isModalVisible1" :employeeData="selectedEmployee" @close="closeEmployeeEditModal"
+      @employee-edited="fetchEmployees" />
   </div>
 </template>
 
@@ -305,21 +251,28 @@ export default {
 </script>
 <style scoped>
 .dropdown-toggle {
-  color: #007bff; /* Màu chữ */
-  font-weight: bold; /* Kiểu chữ đậm */
-  text-decoration: none; /* Xóa gạch chân */
-  padding: 0.5em 1em; /* Khoảng cách padding */
+  color: #007bff;
+  /* Màu chữ */
+  font-weight: bold;
+  /* Kiểu chữ đậm */
+  text-decoration: none;
+  /* Xóa gạch chân */
+  padding: 0.5em 1em;
+  /* Khoảng cách padding */
   cursor: pointer;
 }
+
 /* Hiển thị dropdown khi hover */
 .dropdown:hover .dropdown-menu {
   display: block;
-  margin-top: 0; /* Đảm bảo không có khoảng cách */
+  margin-top: 0;
+  /* Đảm bảo không có khoảng cách */
 }
 
 /* Đảm bảo nút dropdown được hiển thị đúng */
 .dropdown-toggle::after {
-  display: none; /* Ẩn dấu mũi tên nếu cần */
+  display: none;
+  /* Ẩn dấu mũi tên nếu cần */
 }
 
 .search-bar {
